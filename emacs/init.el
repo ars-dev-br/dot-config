@@ -191,6 +191,8 @@
   :config
   (global-set-key (kbd "C-c g t") 'git-timemachine))
 
+(use-package gitignore-mode)
+
 ;;; Programming Languages
 
 (use-package kotlin-mode)
@@ -203,7 +205,11 @@
 
 ;;; Appearance
 
-(use-package powerline
+(use-package telephone-line
   :config
-  (require 'powerline)
-  (powerline-default-theme))
+  (require 'telephone-line)
+  (telephone-line-mode 1))
+
+;; Make the background color of file-buffers different from other buffers.
+(use-package solaire-mode
+  :hook (after-init . solaire-global-mode))
