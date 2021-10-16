@@ -112,9 +112,6 @@
   :config
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer))
 
-(use-package vi-tilde-fringe
-  :hook (after-init . global-vi-tilde-fringe-mode))
-
 ;;; Editing
 
 ;; Install evil but don't enable it by default
