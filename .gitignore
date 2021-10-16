@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+
+!emacs/init.el
+!emacs/early-init.el
+
+!nvim/init.lua
