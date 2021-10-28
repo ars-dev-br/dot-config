@@ -90,6 +90,13 @@
 (setq kept-old-versions 2)
 (setq create-lockfiles nil)
 
+;; Enable upcase- (C-x C-u) and downcase-region (C-x C-l)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;; Do not add encoding comment to Ruby files
+(setq ruby-insert-encoding-magic-comment nil)
+
 ;;;; Packages
 
 ;;; Emacs
