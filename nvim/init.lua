@@ -44,7 +44,7 @@ packer.startup(function()
   packer.use({ 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } })
   packer.use({ 'ms-jpq/coq_nvim', branch = 'coq' })
   packer.use({ 'ms-jpq/coq.artifacts', branch = 'artifacts' })
-  packer.use({ 
+  packer.use({
     'nvim-telescope/telescope.nvim', requires = {
       { 'nvim-lua/popup.nvim' },
       { 'nvim-lua/plenary.nvim' }
@@ -164,4 +164,3 @@ require('nvim-treesitter.configs').setup({
 
 -- apply ruby syntax to .thor files
 vim.api.nvim_exec('autocmd BufNewFile,BufRead *.thor set filetype=ruby', false)
-
