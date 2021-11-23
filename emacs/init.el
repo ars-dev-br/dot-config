@@ -97,6 +97,10 @@
 ;; Do not add encoding comment to Ruby files
 (setq ruby-insert-encoding-magic-comment nil)
 
+;; Add keybinding to browse URL under point/mouse
+(global-set-key (kbd "C-c b") 'browse-url-at-point)
+(global-set-key [s-mouse-1] 'browse-url-at-mouse)
+
 ;;;; Packages
 
 ;;; Emacs
@@ -205,6 +209,7 @@
 (use-package kotlin-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
+(use-package yaml-mode)
 
 (use-package clojure-mode)
 (use-package cider
