@@ -157,6 +157,9 @@
   :hook (after-init . smartparens-global-strict-mode))
 
 (use-package company
+  :config
+  (setq company-dabbrev-downcase nil)
+  (setq company-idle-delay 0.5)
   :hook (after-init . global-company-mode))
 
 ;;; Project management
