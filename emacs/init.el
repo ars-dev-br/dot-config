@@ -24,25 +24,21 @@
 
 ;;;; Appearance
 
-;; Install modus-themes, make the theme change with the system and
+;; Install kaolin-themes, make the theme change with the system and
 ;; create a toggling binding.
-(use-package modus-themes
+(use-package kaolin-themes
   :ensure t
-  :init
-  (modus-themes-load-themes)
   :config
-  (modus-themes-load-operandi)
+  (load-theme 'kaolin-light t)
 
   (defun ars/system-theme (appearance)
     "Load theme, taking current system APPEARANCE into consideration."
     (mapc #'disable-theme custom-enabled-themes)
     (pcase appearance
-      ('light (modus-themes-load-operandi))
-      ('dark (modus-themes-load-vivendi))))
+      ('light (load-theme 'kaolin-light t))
+      ('dark (load-theme 'kaolin-galaxy t))))
 
-  (add-hook 'ns-system-appearance-change-functions #'ars/system-theme)
-  :bind
-  ("<f5>" . modus-themes-toggle))
+  (add-hook 'ns-system-appearance-change-functions #'ars/system-theme))
 
 ;; Set font
 (set-face-attribute 'default nil :font "Iosevka Slab" :height 140 :weight 'normal)
