@@ -1,3 +1,4 @@
+
 ;;;; Straight
 
 ;; Bootstrap straight.el for package management
@@ -24,21 +25,11 @@
 
 ;;;; Appearance
 
-;; Install kaolin-themes, make the theme change with the system and
-;; create a toggling binding.
-(use-package kaolin-themes
+;; Install base16-theme
+(use-package base16-theme
   :ensure t
   :config
-  (load-theme 'kaolin-light t)
-
-  (defun ars/system-theme (appearance)
-    "Load theme, taking current system APPEARANCE into consideration."
-    (mapc #'disable-theme custom-enabled-themes)
-    (pcase appearance
-      ('light (load-theme 'kaolin-light t))
-      ('dark (load-theme 'kaolin-galaxy t))))
-
-  (add-hook 'ns-system-appearance-change-functions #'ars/system-theme))
+  (load-theme 'base16-nord t))
 
 ;; Set font
 (set-face-attribute 'default nil :font "Iosevka Slab" :height 140 :weight 'normal)
@@ -117,7 +108,9 @@
 
 (use-package avy
   :config
-  (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer))
+  (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
+  (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
+
 
 ;;; Editing
 
@@ -201,7 +194,7 @@
   :config
   (global-set-key (kbd "C-c g t") 'git-timemachine))
 
-(use-package gitignore-mode)
+; (use-package gitignore-mode)
 
 ;;; Programming Languages
 
