@@ -23,6 +23,8 @@ packer.startup(function()
   -- color theme
   packer.use('rakr/vim-one')
   packer.use('cocopon/iceberg.vim')
+  packer.use('arcticicestudio/nord-vim')
+  packer.use('dracula/vim')
 
   -- use git commands from vim
   packer.use('tpope/vim-fugitive')
@@ -62,7 +64,7 @@ end)
 require('lualine').setup({
   options = {
     icons_enabled = false,
-    theme = 'onelight'
+    theme = 'dracula'
   }
 })
 
@@ -103,8 +105,8 @@ vim.wo.signcolumn = 'yes'
 vim.wo.wrap = false
 
 vim.o.termguicolors = true
-vim.cmd [[set background=light]]
-vim.cmd [[colorscheme one]]
+vim.cmd [[set background=dark]]
+vim.cmd [[colorscheme dracula]]
 
 -- set relative line numbers with auto-toggle
 vim.wo.number = true

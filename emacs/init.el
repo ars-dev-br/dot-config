@@ -25,14 +25,13 @@
 
 ;;;; Appearance
 
-;; Install base16-theme
-(use-package base16-theme
-  :ensure t
+;; Install and load themes
+(use-package dracula-theme
   :config
-  (load-theme 'base16-nord t))
+  (load-theme 'dracula t))
 
 ;; Set font
-(set-face-attribute 'default nil :font "Iosevka Slab" :height 140 :weight 'normal)
+(set-face-attribute 'default nil :font "Noto Sans Mono" :height 120 :weight 'normal)
 
 ;;;; Saner defaults
 
