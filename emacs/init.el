@@ -1,4 +1,3 @@
-
 ;;;; Straight
 
 ;; Bootstrap straight.el for package management
@@ -25,10 +24,33 @@
 
 ;;;; Appearance
 
-;; Install and load themes
-(use-package dracula-theme
+;; Install kaolin-themes, make the theme change with the system (macos
+;; only) and create a toggling binding.
+(use-package kaolin-themes
+  :init
+  (load-theme 'kaolin-shiva t)
+
   :config
-  (load-theme 'dracula t))
+  (defun ars/system-theme (appearance)
+    "Load theme, taking current system APPEARANCE into consideration."
+    (mapc #'disable-theme custom-enabled-themes)
+    (pcase appearance
+      ('light (load-theme 'kaolin-valley-light t))
+      ('dark (load-theme 'kaolin-shiva t))))
+
+  (defun ars/toggle-theme ()
+    (interactive)
+    "Toggle between a light or a dark theme."
+    (let ((enabled-themes custom-enabled-themes))
+      (mapc #'disable-theme custom-enabled-themes)
+      (if (member 'kaolin-valley-light enabled-themes)
+	  (load-theme 'kaolin-shiva t)
+	(load-theme 'kaolin-valley-light t))))
+
+  (add-hook 'ns-system-appearance-change-functions #'ars/system-theme)
+
+  :bind
+  ("<f5>" . ars/toggle-theme))
 
 ;; Set font
 (set-face-attribute 'default nil :font "Noto Sans Mono" :height 120 :weight 'normal)
@@ -216,3 +238,16 @@
 ;; Make the background color of file-buffers different from other buffers.
 (use-package solaire-mode
   :hook (after-init . solaire-global-mode))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(warning-suppress-types '((use-package) (comp))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
