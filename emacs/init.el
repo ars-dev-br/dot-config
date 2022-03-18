@@ -187,6 +187,9 @@
 (use-package forge
   :after magit)
 
+(use-package git-gutter
+  :hook ((prog-mode text-mode) . git-gutter-mode))
+
 (use-package git-gutter-fringe
   :diminish git-gutter-mode
   :after git-gutter
@@ -204,8 +207,7 @@
   nil nil 'center)
   (define-fringe-bitmap 'git-gutter-fr:deleted
   [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-  nil nil 'center)
-  (global-git-gutter-mode))
+  nil nil 'center))
 
 (use-package git-link
   :config
