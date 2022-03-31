@@ -221,6 +221,7 @@
 
 ;;; Programming Languages
 
+(use-package csv-mode)
 (use-package kotlin-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
