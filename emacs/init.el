@@ -24,28 +24,34 @@
 
 ;;;; Appearance
 
+;; Install modus-themes
+(use-package modus-themes
+  :ensure
+  :init (modus-themes-load-themes))
+
 ;; Install kaolin-themes, make the theme change with the system (macos
 ;; only) and create a toggling binding.
 (use-package kaolin-themes
+  :after modus-themes
   :init
-  (load-theme 'kaolin-shiva t)
+  (load-theme 'kaolin-temple t)
 
   :config
   (defun ars/system-theme (appearance)
     "Load theme, taking current system APPEARANCE into consideration."
     (mapc #'disable-theme custom-enabled-themes)
     (pcase appearance
-      ('light (load-theme 'kaolin-valley-light t))
-      ('dark (load-theme 'kaolin-shiva t))))
+      ('light (load-theme 'modus-operandi t))
+      ('dark (load-theme 'kaolin-temple t))))
 
   (defun ars/toggle-theme ()
     (interactive)
     "Toggle between a light or a dark theme."
     (let ((enabled-themes custom-enabled-themes))
       (mapc #'disable-theme custom-enabled-themes)
-      (if (member 'kaolin-valley-light enabled-themes)
-	  (load-theme 'kaolin-shiva t)
-	(load-theme 'kaolin-valley-light t))))
+      (if (member 'modus-operandi enabled-themes)
+	  (load-theme 'kaolin-temple t)
+	(load-theme 'modus-operandi t))))
 
   (add-hook 'ns-system-appearance-change-functions #'ars/system-theme)
 
@@ -53,7 +59,8 @@
   ("<f5>" . ars/toggle-theme))
 
 ;; Set font
-(set-face-attribute 'default nil :font "Noto Sans Mono" :height 120 :weight 'normal)
+(set-face-attribute 'default nil :font "Iosevka Term Slab" :height 130 :weight 'normal)
+;; (set-face-attribute 'default nil :font "Noto Sans Mono" :height 120 :weight 'normal)
 
 ;;;; Saner defaults
 
@@ -64,6 +71,7 @@
 (menu-bar-mode 1)
 (setq visible-bell t)
 (add-hook 'after-init-hook #'global-display-line-numbers-mode)
+(setq frame-resize-pixelwise t)
 
 ;; Enable auto-revert mode
 (setq auto-revert-verbose t)
