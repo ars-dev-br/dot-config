@@ -24,6 +24,15 @@
 
 ;;;; Appearance
 
+;; Set appearance constants
+(defconst ars/light-theme 'modus-operandi)
+(defconst ars/light-font "Noto Sans Mono")
+(defconst ars/light-height 120)
+
+(defconst ars/dark-theme 'kaolin-temple)
+(defconst ars/dark-font "Iosevka Term Slab")
+(defconst ars/dark-height 130)
+
 ;; Install modus-themes
 (use-package modus-themes
   :ensure
@@ -34,33 +43,32 @@
 (use-package kaolin-themes
   :after modus-themes
   :init
-  (load-theme 'kaolin-temple t)
+  (load-theme ars/dark-theme t)
+  (set-face-attribute 'default nil :font ars/dark-font :height ars/dark-height :weight 'normal)
 
   :config
   (defun ars/system-theme (appearance)
     "Load theme, taking current system APPEARANCE into consideration."
     (mapc #'disable-theme custom-enabled-themes)
     (pcase appearance
-      ('light (load-theme 'modus-operandi t))
-      ('dark (load-theme 'kaolin-temple t))))
+      ('light (load-theme ars/light-theme t)
+	      (set-face-attribute 'default nil :font ars/light-font :height ars/light-height :weight 'normal))
+      ('dark (load-theme ars/dark-theme t)
+	     (set-face-attribute 'default nil :font ars/dark-font :height ars/dark-height :weight 'normal))))
 
   (defun ars/toggle-theme ()
     (interactive)
     "Toggle between a light or a dark theme."
     (let ((enabled-themes custom-enabled-themes))
       (mapc #'disable-theme custom-enabled-themes)
-      (if (member 'modus-operandi enabled-themes)
-	  (load-theme 'kaolin-temple t)
-	(load-theme 'modus-operandi t))))
+      (if (member ars/light-theme enabled-themes)
+	  (ars/system-theme 'dark)
+	(ars/system-theme 'light))))
 
   (add-hook 'ns-system-appearance-change-functions #'ars/system-theme)
 
   :bind
   ("<f5>" . ars/toggle-theme))
-
-;; Set font
-(set-face-attribute 'default nil :font "Iosevka Term Slab" :height 130 :weight 'normal)
-;; (set-face-attribute 'default nil :font "Noto Sans Mono" :height 120 :weight 'normal)
 
 ;;;; Saner defaults
 
