@@ -135,6 +135,7 @@
     (exec-path-from-shell-initialize)))
 
 (use-package rg)
+(use-package multi-term)
 
 (use-package helm
   :config
@@ -147,7 +148,6 @@
   :config
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
-
 
 ;;; Editing
 
@@ -238,7 +238,6 @@
 ;;; Programming Languages
 
 (use-package csv-mode)
-(use-package kotlin-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
 (use-package yaml-mode)
