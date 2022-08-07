@@ -25,26 +25,46 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'modus-operandi)
+(defconst ars/light-theme 'everforest-hard-light)
 (defconst ars/light-font "Noto Sans Mono")
 (defconst ars/light-height 120)
+(defconst ars/light-width 'condensed)
 
-(defconst ars/dark-theme 'kaolin-temple)
-(defconst ars/dark-font "Iosevka Term Slab")
-(defconst ars/dark-height 130)
+(defconst ars/dark-theme 'everforest-hard-dark)
+(defconst ars/dark-font "Noto Sans Mono")
+(defconst ars/dark-height 120)
+(defconst ars/dark-width 'condensed)
 
-;; Install modus-themes
+;; Install themes
 (use-package modus-themes
   :ensure
   :init (modus-themes-load-themes))
 
+;; I can't get use-package/straight to build everforest, not sure
+;; why. Let's use it just to download the repository, but let's
+;; "build" it on our own.
+(use-package everforest
+  :straight
+  (everforest :type git :repo "https://git.sr.ht/~theorytoe/everforest-theme" t nil)
+  :init
+  (add-to-list 'custom-theme-load-path "/Users/andre/.config/emacs/straight/repos/everforest")
+  :config
+  (provide 'everforest-theme))
+
+(use-package gruvbox-theme)
+(use-package dracula-theme)
+
 ;; Install kaolin-themes, make the theme change with the system (macos
 ;; only) and create a toggling binding.
 (use-package kaolin-themes
-  :after modus-themes
+  :after modus-themes gruvbox-theme dracula-theme
   :init
   (load-theme ars/dark-theme t)
-  (set-face-attribute 'default nil :font ars/dark-font :height ars/dark-height :weight 'normal)
+  (set-face-attribute 'default nil
+		      :font ars/dark-font
+		      :height ars/dark-height
+		      :weight 'normal
+		      :width ars/dark-width)
 
   :config
   (defun ars/system-theme (appearance)
@@ -52,9 +72,17 @@
     (mapc #'disable-theme custom-enabled-themes)
     (pcase appearance
       ('light (load-theme ars/light-theme t)
-	      (set-face-attribute 'default nil :font ars/light-font :height ars/light-height :weight 'normal))
+	      (set-face-attribute 'default nil
+				  :font ars/light-font
+				  :height ars/light-height
+				  :weight 'normal
+				  :width ars/light-width))
       ('dark (load-theme ars/dark-theme t)
-	     (set-face-attribute 'default nil :font ars/dark-font :height ars/dark-height :weight 'normal))))
+	     (set-face-attribute 'default nil
+				 :font ars/dark-font
+				 :height ars/dark-height
+				 :weight 'normal
+				 :width ars/dark-width))))
 
   (defun ars/toggle-theme ()
     (interactive)
@@ -150,10 +178,6 @@
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
 
 ;;; Editing
-
-;; Install evil but don't enable it by default
-(use-package evil
-  :ensure t)
 
 (use-package editorconfig
   :ensure t
