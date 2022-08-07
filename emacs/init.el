@@ -25,7 +25,7 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'everforest-hard-light)
+(defconst ars/light-theme 'modus-operandi)
 (defconst ars/light-font "Noto Sans Mono")
 (defconst ars/light-height 120)
 (defconst ars/light-width 'condensed)
@@ -280,6 +280,57 @@
 ;; Make the background color of file-buffers different from other buffers.
 (use-package solaire-mode
   :hook (after-init . solaire-global-mode))
+
+;;;; Custom functions
+
+;; Most of these functions have been graciously provided by either
+;; Laura Viglioni (https://github.com/Viglioni) and Sandro
+;; Luiz (https://github.com/ansdor).
+
+(defun ars/shift-list (list)
+  "Returns a new list with the same elements of LIST shifted one position to the left.
+I.e. (ars/shift-list '(a b c d)) returns '(b c d a)."
+  (let ((reversed (reverse list)))
+    (reverse (cons (car list)
+		   (butlast reversed)))))
+
+(defun ars/unshift-list (list)
+  "Returns a new list with the same elements of LIST shifted one position to the right.
+I.e. (ars/unshift-list '(a b c d)) returns '(d a b c)."
+  (append (last list) (butlast list)))
+
+(defun ars/rotate-list (list direction)
+  "Returns a new list with the same elements of LIST shifted one
+position to the right or to the left depending on the value of
+DIRECTION (which must be either 'cw or 'ccw)."
+  (if (eq direction 'cw)
+      (ars/shift-list list)
+    (ars/unshift-list list)))
+
+(defun ars/shift-buffers (direction)
+  "Rotates the currently open buffers between the windows of the
+current frame. DIRECTION must be either 'cw or 'ccw."
+  (let* ((buffers (mapcar #'window-buffer (window-list)))
+	 (rotated-buffers (ars/rotate-list buffers direction)))
+    (mapc (lambda (window)
+	    (let ((window-index (seq-position (window-list) window)))
+	      (set-window-buffer window (nth window-index rotated-buffers))))
+	  (window-list))))
+
+(defun ars/shift-buffers-cw ()
+  "Rotates the currently open buffers between the windows of the
+current frame in a clockwise direction."
+  (interactive)
+  (ars/shift-buffers 'cw))
+
+(defun ars/shift-buffers-ccw ()
+  "Rotates the currently open buffers between the windows of the
+current frame in a counterclockwise direction."
+  (interactive)
+  (ars/shift-buffers 'ccw))
+
+(global-set-key (kbd "C-c w s") 'ars/shift-buffers-cw)
+(global-set-key (kbd "C-c w u") 'ars/shift-buffers-ccw)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
