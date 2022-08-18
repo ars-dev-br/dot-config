@@ -282,10 +282,14 @@
   :hook (after-init . solaire-global-mode))
 
 ;;;; Custom functions
-
 ;; Most of these functions have been graciously provided by either
 ;; Laura Viglioni (https://github.com/Viglioni) and Sandro
 ;; Luiz (https://github.com/ansdor).
+
+(defun ars/previous-files ()
+  "Returns a list of buffers visiting files skipping the current one."
+  (seq-filter 'buffer-file-name
+	      (remq (current-buffer) (buffer-list))))
 
 (defun ars/shift-list (list)
   "Returns a new list with the same elements of LIST shifted one position to the left.
@@ -329,8 +333,74 @@ current frame in a counterclockwise direction."
   (interactive)
   (ars/shift-buffers 'ccw))
 
+(defun ars/split-window-double-columns ()
+  "Set the current frame layout to two columns."
+  (interactive)
+  (let ((previous-file (or (car (ars/previous-files))
+			   (current-buffer))))
+    (delete-other-windows)
+    (set-window-buffer (split-window-right) previous-file)
+    (balance-windows)))
+
+(defun ars/split-window-triple-columns ()
+  "Set the current frame layout to three columns."
+  (interactive)
+  (delete-other-windows)
+  (let* ((previous-files (ars/previous-files))
+	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
+	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
+	 (second-window (split-window-right))
+	 (third-window (split-window second-window nil 'right)))
+    (set-window-buffer second-window second-buffer)
+    (set-window-buffer third-window third-buffer))
+  (balance-windows))
+
+(defun ars/split-window-quadruple-columns ()
+  "Set the current frame layout to quadruple columns."
+  (interactive)
+  (delete-other-windows)
+  (let* ((previous-files (ars/previous-files))
+	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
+	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
+	 (fourth-buffer (or (nth 2 previous-files) (current-buffer)))
+	 (second-window (split-window-right))
+	 (third-window (split-window second-window nil 'right))
+	 (fourth-window (split-window third-window nil 'right)))
+    (set-window-buffer second-window second-buffer)
+    (set-window-buffer third-window third-buffer)
+    (set-window-buffer fourth-window fourth-buffer))
+  (balance-windows))
+
+(defun ars/split-window-two-by-two-grid ()
+  "Set the current frame layout to a two-by-two grid."
+  (interactive)
+  (delete-other-windows)
+  (let* ((previous-files (ars/previous-files))
+	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
+	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
+	 (fourth-buffer (or (nth 2 previous-files) (current-buffer)))
+	 (second-window (split-window-right))
+	 (third-window (split-window-below))
+	 (fourth-window (split-window second-window nil 'below)))
+    (set-window-buffer second-window second-buffer)
+    (set-window-buffer third-window third-buffer)
+    (set-window-buffer fourth-window fourth-buffer))
+  (balance-windows))
+
+(defun ars/switch-to-previous-file ()
+  "Switch to the most recently used file."
+  (interactive)
+  (switch-to-buffer (or (car (ars/previous-files))
+			(current-buffer))))
+
 (global-set-key (kbd "C-c w s") 'ars/shift-buffers-cw)
 (global-set-key (kbd "C-c w u") 'ars/shift-buffers-ccw)
+(global-set-key (kbd "C-c w w") 'ars/switch-to-previous-file)
+(global-set-key (kbd "C-c w 1") 'delete-other-windows) ; just for consistency's sake
+(global-set-key (kbd "C-c w 2") 'ars/split-window-double-columns)
+(global-set-key (kbd "C-c w 3") 'ars/split-window-triple-columns)
+(global-set-key (kbd "C-c w 4") 'ars/split-window-quadruple-columns)
+(global-set-key (kbd "C-c w x") 'ars/split-window-two-by-two-grid)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
