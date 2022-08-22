@@ -180,6 +180,20 @@
   (marginalia-mode)
   :bind ("C-c m" . marginalia-cycle))
 
+(use-package consult)
+
+(use-package embark
+  :bind (("C-." . embark-act)
+	 ("C-;" . embark-dwim)
+	 ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult
+  :after (embark consult)
+  :demand t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
 (use-package avy
   :config
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
