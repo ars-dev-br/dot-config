@@ -25,12 +25,12 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'modus-operandi)
+(defconst ars/light-theme 'sanityinc-tomorrow-day)
 (defconst ars/light-font "Noto Sans Mono")
 (defconst ars/light-height 120)
 (defconst ars/light-width 'condensed)
 
-(defconst ars/dark-theme 'everforest-hard-dark)
+(defconst ars/dark-theme 'sanityinc-tomorrow-eighties)
 (defconst ars/dark-font "Noto Sans Mono")
 (defconst ars/dark-height 120)
 (defconst ars/dark-width 'condensed)
@@ -53,11 +53,12 @@
 
 (use-package gruvbox-theme)
 (use-package dracula-theme)
+(use-package color-theme-sanityinc-tomorrow)
 
 ;; Install kaolin-themes, make the theme change with the system (macos
 ;; only) and create a toggling binding.
 (use-package kaolin-themes
-  :after modus-themes gruvbox-theme dracula-theme
+  :after modus-themes gruvbox-theme dracula-theme color-theme-sanityinc-tomorrow
   :init
   (load-theme ars/dark-theme t)
   (set-face-attribute 'default nil
@@ -165,12 +166,19 @@
 (use-package rg)
 (use-package multi-term)
 
-(use-package helm
-  :config
-  (global-set-key (kbd "M-x") #'helm-M-x)
-  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+(use-package vertico
+  :init (vertico-mode))
 
-  (helm-mode 1))
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless basic)
+	completion-category-defaults nil
+	completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :init
+  (marginalia-mode)
+  :bind ("C-c m" . marginalia-cycle))
 
 (use-package avy
   :config
@@ -211,13 +219,6 @@
   (setq company-dabbrev-downcase nil)
   (setq company-idle-delay 0.5)
   :hook (after-init . global-company-mode))
-
-;;; Project management
-
-(use-package projectile
-  :config
-  (projectile-mode 1)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 ;;; Version Control
 
