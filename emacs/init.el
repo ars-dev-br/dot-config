@@ -36,14 +36,15 @@
 (defconst ars/dark-width 'condensed)
 
 ;; Install themes
+
+(use-package color-theme-sanityinc-tomorrow)
+(use-package dracula-theme)
+(use-package ef-themes)
+(use-package gruvbox-theme)
+(use-package kaolin-themes)
 (use-package modus-themes
   :ensure
   :init (modus-themes-load-themes))
-
-(use-package gruvbox-theme)
-(use-package dracula-theme)
-(use-package color-theme-sanityinc-tomorrow)
-(use-package ef-themes)
 
 ;; I can't get use-package/straight to build everforest, not sure
 ;; why. Let's just create a fake package for it and build it manually.
@@ -64,12 +65,13 @@
     (add-to-list 'custom-theme-load-path everforest-directory)
     (provide 'everforest-theme)))
 
-;; Install kaolin-themes, make the theme change with the system (macos
-;; only) and create a toggling binding.
-(use-package kaolin-themes
+;; Make the theme change with the system (macos only) and create a
+;; toggling binding.
+(use-package all-themes
+  :straight '(all-themes :type built-in)
   :after modus-themes gruvbox-theme dracula-theme
          color-theme-sanityinc-tomorrow ef-themes
-         everforest-theme
+         everforest-theme kaolin-themes
   :init
   (load-theme ars/dark-theme t)
   (set-face-attribute 'default nil
