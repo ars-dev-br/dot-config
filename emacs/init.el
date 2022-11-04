@@ -111,58 +111,63 @@
   ("<f5>" . ars/toggle-theme))
 
 ;;;; Saner defaults
+(use-package saner-defaults
+  :straight '(saner-defaults :type built-in)
+  :init
+  (setq inhibit-startup-message t)
+  (column-number-mode 1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (menu-bar-mode 1)
+  (add-hook 'after-init-hook #'global-display-line-numbers-mode)
+  (setq frame-resize-pixelwise t)
 
-(setq inhibit-startup-message t)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(set-fringe-mode 10)
-(menu-bar-mode 1)
-(add-hook 'after-init-hook #'global-display-line-numbers-mode)
-(setq frame-resize-pixelwise t)
+  ;; Enable auto-revert mode
+  (setq auto-revert-verbose t)
+  (add-hook 'after-init-hook #'global-auto-revert-mode)
 
-;; Enable auto-revert mode
-(setq auto-revert-verbose t)
-(add-hook 'after-init-hook #'global-auto-revert-mode)
+  ;; Remove whitespace when saving files
+  (setq delete-trailing-lines t)
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-;; Remove whitespace when saving files
-(setq delete-trailing-lines t)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+  ;; Supress native compilation warnings
+  (setq warning-suppress-types '((comp)))
 
-;; Supress native compilation warnings
-(setq warning-suppress-types '((comp)))
+  ;; Uniquify buffer names
+  (setq uniquify-buffer-name-style 'forward)
+  (setq uniquify-strip-common-suffix t)
+  (setq uniquify-after-kill-buffer-p t)
 
-;; Uniquify buffer names
-(setq uniquify-buffer-name-style 'forward)
-(setq uniquify-strip-common-suffix t)
-(setq uniquify-after-kill-buffer-p t)
+  ;; Minibuffer history
+  (setq savehist-file (locate-user-emacs-file "savehist"))
+  (setq history-length 10000)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minubuffer-history t)
+  (add-hook 'after-init-hook #'savehist-mode)
 
-;; Minibuffer history
-(setq savehist-file (locate-user-emacs-file "savehist"))
-(setq history-length 10000)
-(setq history-delete-duplicates t)
-(setq savehist-save-minubuffer-history t)
-(add-hook 'after-init-hook #'savehist-mode)
+  ;; Backup files
+  (setq backup-directory-alist
+	`(("." . ,(concat user-emacs-directory "backup/"))))
+  (setq backup-by-copying t)
+  (setq version-control t)
+  (setq delete-old-versions t)
+  (setq kept-new-versions 6)
+  (setq kept-old-versions 2)
+  (setq create-lockfiles nil)
 
-;; Backup files
-(setq backup-directory-alist
-      `(("." . ,(concat user-emacs-directory "backup/"))))
-(setq backup-by-copying t)
-(setq version-control t)
-(setq delete-old-versions t)
-(setq kept-new-versions 6)
-(setq kept-old-versions 2)
-(setq create-lockfiles nil)
+  ;; Enable upcase- (C-x C-u) and downcase-region (C-x C-l)
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
 
-;; Enable upcase- (C-x C-u) and downcase-region (C-x C-l)
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+  ;; Do not add encoding comment to Ruby files
+  (setq ruby-insert-encoding-magic-comment nil)
 
-;; Do not add encoding comment to Ruby files
-(setq ruby-insert-encoding-magic-comment nil)
+  ;; Add keybinding to browse URL under point/mouse
+  (global-set-key (kbd "C-c b") 'browse-url-at-point)
+  (global-set-key [s-mouse-1] 'browse-url-at-mouse)
 
-;; Add keybinding to browse URL under point/mouse
-(global-set-key (kbd "C-c b") 'browse-url-at-point)
-(global-set-key [s-mouse-1] 'browse-url-at-mouse)
+  (provide 'saner-defaults))
+
 
 ;;;; Packages
 
@@ -296,11 +301,6 @@
   :after clojure-mode)
 
 ;;; Appearance
-
-(use-package telephone-line
-  :config
-  (require 'telephone-line)
-  (telephone-line-mode 1))
 
 ;; Make the background color of file-buffers different from other buffers.
 (use-package solaire-mode
