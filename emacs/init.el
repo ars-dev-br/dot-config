@@ -25,14 +25,14 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'sanityinc-tomorrow-day)
-(defconst ars/light-font "Noto Sans Mono")
-(defconst ars/light-height 120)
+(defconst ars/light-theme 'everforest-hard-light)
+(defconst ars/light-font "Iosevka")
+(defconst ars/light-height 130)
 (defconst ars/light-width 'condensed)
 
-(defconst ars/dark-theme 'sanityinc-tomorrow-eighties)
-(defconst ars/dark-font "Noto Sans Mono")
-(defconst ars/dark-height 120)
+(defconst ars/dark-theme 'everforest-hard-dark)
+(defconst ars/dark-font "Iosevka")
+(defconst ars/dark-height 130)
 (defconst ars/dark-width 'condensed)
 
 ;; Install themes
@@ -40,25 +40,36 @@
   :ensure
   :init (modus-themes-load-themes))
 
-;; I can't get use-package/straight to build everforest, not sure
-;; why. Let's use it just to download the repository, but let's
-;; "build" it on our own.
-(use-package everforest
-  :straight
-  (everforest :type git :repo "https://git.sr.ht/~theorytoe/everforest-theme" t nil)
-  :init
-  (add-to-list 'custom-theme-load-path "/Users/andre/.config/emacs/straight/repos/everforest")
-  :config
-  (provide 'everforest-theme))
-
 (use-package gruvbox-theme)
 (use-package dracula-theme)
 (use-package color-theme-sanityinc-tomorrow)
+(use-package ef-themes)
+
+;; I can't get use-package/straight to build everforest, not sure
+;; why. Let's just create a fake package for it and build it manually.
+(use-package everforest-theme
+  :straight '(everforest-theme :type built-in)
+  :after magit
+  :init
+  (let* ((repos-directory (file-name-concat user-emacs-directory "local-repos"))
+	 (repos-directory-exists (file-directory-p repos-directory))
+	 (everforest-directory (file-name-concat repos-directory "everforest-theme"))
+	 (everforest-directory-exists (file-directory-p everforest-directory)))
+    (unless repos-directory-exists
+      (make-directory repos-directory))
+    (unless everforest-directory-exists
+      (magit-call-git "clone"
+		      "https://git.sr.ht/~theorytoe/everforest-theme"
+		      (expand-file-name everforest-directory)))
+    (add-to-list 'custom-theme-load-path everforest-directory)
+    (provide 'everforest-theme)))
 
 ;; Install kaolin-themes, make the theme change with the system (macos
 ;; only) and create a toggling binding.
 (use-package kaolin-themes
-  :after modus-themes gruvbox-theme dracula-theme color-theme-sanityinc-tomorrow
+  :after modus-themes gruvbox-theme dracula-theme
+         color-theme-sanityinc-tomorrow ef-themes
+         everforest-theme
   :init
   (load-theme ars/dark-theme t)
   (set-face-attribute 'default nil
@@ -86,8 +97,8 @@
 				 :width ars/dark-width))))
 
   (defun ars/toggle-theme ()
-    (interactive)
     "Toggle between a light or a dark theme."
+    (interactive)
     (let ((enabled-themes custom-enabled-themes))
       (mapc #'disable-theme custom-enabled-themes)
       (if (member ars/light-theme enabled-themes)
@@ -106,7 +117,6 @@
 (tool-bar-mode -1)
 (set-fringe-mode 10)
 (menu-bar-mode 1)
-(setq visible-bell t)
 (add-hook 'after-init-hook #'global-display-line-numbers-mode)
 (setq frame-resize-pixelwise t)
 
@@ -268,9 +278,9 @@
   :config
   (global-set-key (kbd "C-c g l") 'git-link))
 
-(use-package git-timemachine
-  :config
-  (global-set-key (kbd "C-c g t") 'git-timemachine))
+;; (use-package git-timemachine
+;;   :config
+;;   (global-set-key (kbd "C-c g t") 'git-timemachine))
 
 ; (use-package gitignore-mode)
 
@@ -416,16 +426,3 @@ current frame in a counterclockwise direction."
 (global-set-key (kbd "C-c w 3") 'ars/split-window-triple-columns)
 (global-set-key (kbd "C-c w 4") 'ars/split-window-quadruple-columns)
 (global-set-key (kbd "C-c w x") 'ars/split-window-two-by-two-grid)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(warning-suppress-types '((use-package) (comp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
