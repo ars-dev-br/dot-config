@@ -25,13 +25,13 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'everforest-hard-light)
-(defconst ars/light-font "Iosevka")
+(defconst ars/light-theme 'ef-cyprus)
+(defconst ars/light-font "Noto Sans Mono")
 (defconst ars/light-height 130)
 (defconst ars/light-width 'condensed)
 
 (defconst ars/dark-theme 'everforest-hard-dark)
-(defconst ars/dark-font "Iosevka")
+(defconst ars/dark-font "Noto Sans Mono")
 (defconst ars/dark-height 130)
 (defconst ars/dark-width 'condensed)
 
@@ -79,6 +79,8 @@
 		      :height ars/dark-height
 		      :weight 'normal
 		      :width ars/dark-width)
+
+  (provide 'all-themes)
 
   :config
   (defun ars/system-theme (appearance)
