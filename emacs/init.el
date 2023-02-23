@@ -25,15 +25,17 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'ef-cyprus)
-(defconst ars/light-font "Noto Sans Mono")
-(defconst ars/light-height 130)
-(defconst ars/light-width 'condensed)
+(defconst ars/light-theme 'modus-operandi-tinted)
+(defconst ars/light-font "Fira Code")
+(defconst ars/light-height 120)
+(defconst ars/light-width 'regular)
+(defconst ars/light-weight 'normal)
 
-(defconst ars/dark-theme 'everforest-hard-dark)
-(defconst ars/dark-font "Noto Sans Mono")
-(defconst ars/dark-height 130)
-(defconst ars/dark-width 'condensed)
+(defconst ars/dark-theme 'doom-monokai-ristretto)
+(defconst ars/dark-font "Fira Code")
+(defconst ars/dark-height 120)
+(defconst ars/dark-width 'regular)
+(defconst ars/dark-weight 'normal)
 
 ;; Install themes
 
@@ -42,9 +44,8 @@
 (use-package ef-themes)
 (use-package gruvbox-theme)
 (use-package kaolin-themes)
-(use-package modus-themes
-  :ensure
-  :init (modus-themes-load-themes))
+(use-package modus-themes :ensure)
+(use-package doom-themes)
 
 ;; I can't get use-package/straight to build everforest, not sure
 ;; why. Let's just create a fake package for it and build it manually.
@@ -77,7 +78,7 @@
   (set-face-attribute 'default nil
 		      :font ars/dark-font
 		      :height ars/dark-height
-		      :weight 'normal
+		      :weight ars/dark-weight
 		      :width ars/dark-width)
 
   (provide 'all-themes)
@@ -91,13 +92,13 @@
 	      (set-face-attribute 'default nil
 				  :font ars/light-font
 				  :height ars/light-height
-				  :weight 'normal
+				  :weight ars/light-weight
 				  :width ars/light-width))
       ('dark (load-theme ars/dark-theme t)
 	     (set-face-attribute 'default nil
 				 :font ars/dark-font
 				 :height ars/dark-height
-				 :weight 'normal
+				 :weight ars/dark-weight
 				 :width ars/dark-width))))
 
   (defun ars/toggle-theme ()
@@ -123,6 +124,7 @@
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (menu-bar-mode 1)
+  (repeat-mode 1)
   (add-hook 'after-init-hook #'global-display-line-numbers-mode)
   (setq frame-resize-pixelwise t)
 
@@ -170,6 +172,9 @@
   (global-set-key (kbd "C-c b") 'browse-url-at-point)
   (global-set-key [s-mouse-1] 'browse-url-at-mouse)
 
+  ;; Increase kill-ring size
+  (setq kill-ring-max 10000)
+
   (provide 'saner-defaults))
 
 
@@ -186,6 +191,7 @@
 (use-package multi-term)
 
 (use-package vertico
+  ; :straight (:files (:defaults "extensions/*"))
   :init (vertico-mode))
 
 (use-package orderless
@@ -199,7 +205,11 @@
   (marginalia-mode)
   :bind ("C-c m" . marginalia-cycle))
 
-(use-package consult)
+(use-package consult
+  :bind (("M-g g" . consult-goto-line)
+	 ("M-y" . consult-yank-from-kill-ring)
+	 ("C-c C-s" . consult-line)
+	 ("C-c C-r" . consult-ripgrep)))
 
 (use-package embark
   :bind (("C-." . embark-act)
@@ -303,6 +313,13 @@
 (use-package clojure-mode)
 (use-package cider
   :after clojure-mode)
+
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-sorbet-use-bundler t)
+  :hook (ruby-mode . lsp)
+  :commands lsp)
 
 ;;; Appearance
 
