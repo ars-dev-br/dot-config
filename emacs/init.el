@@ -2,6 +2,7 @@
 
 ;; Bootstrap straight.el for package management
 (defvar bootstrap-version)
+(setq straight-repository-branch "develop")
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
       (bootstrap-version 5))
@@ -25,27 +26,38 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-(defconst ars/light-theme 'modus-operandi-tinted)
-(defconst ars/light-font "Fira Code")
+;; (defconst ars/light-theme 'twilight-bright)
+(defconst ars/light-theme 'twilight-bright)
+(defconst ars/light-font "Iosevka Term")
 (defconst ars/light-height 120)
 (defconst ars/light-width 'regular)
 (defconst ars/light-weight 'normal)
 
-(defconst ars/dark-theme 'doom-monokai-ristretto)
-(defconst ars/dark-font "Fira Code")
+(defconst ars/dark-theme 'sanityinc-tomorrow-eighties)
+(defconst ars/dark-font "Iosevka Term")
 (defconst ars/dark-height 120)
 (defconst ars/dark-width 'regular)
 (defconst ars/dark-weight 'normal)
 
 ;; Install themes
 
+(use-package autothemer :ensure t)
+
 (use-package color-theme-sanityinc-tomorrow)
-(use-package dracula-theme)
-(use-package ef-themes)
-(use-package gruvbox-theme)
-(use-package kaolin-themes)
+;; (use-package nano-theme)
+;; (use-package dracula-theme)
+;; (use-package ef-themes)
+;; (use-package gruvbox-theme)
+;; (use-package kaolin-themes)
 (use-package modus-themes :ensure)
-(use-package doom-themes)
+;; (use-package doom-themes)
+;; (use-package github-theme)
+(use-package twilight-bright-theme)
+;; (use-package sublime-themes)
+;; (use-package ample-theme)
+;; (use-package github-modern-theme)
+;; (use-package material-theme)
+(use-package base16-theme)
 
 ;; I can't get use-package/straight to build everforest, not sure
 ;; why. Let's just create a fake package for it and build it manually.
@@ -70,9 +82,7 @@
 ;; toggling binding.
 (use-package all-themes
   :straight '(all-themes :type built-in)
-  :after modus-themes gruvbox-theme dracula-theme
-         color-theme-sanityinc-tomorrow ef-themes
-         everforest-theme kaolin-themes
+  ; :after rose-pine
   :init
   (load-theme ars/dark-theme t)
   (set-face-attribute 'default nil
@@ -127,6 +137,7 @@
   (repeat-mode 1)
   (add-hook 'after-init-hook #'global-display-line-numbers-mode)
   (setq frame-resize-pixelwise t)
+  (setq-default indent-tabs-mode nil)
 
   ;; Enable auto-revert mode
   (setq auto-revert-verbose t)
@@ -228,6 +239,11 @@
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
 
+;; (use-package beframe
+;;   :init
+;;   (beframe-mode))
+
+
 ;;; Editing
 
 (use-package editorconfig
@@ -301,13 +317,25 @@
 ;;   :config
 ;;   (global-set-key (kbd "C-c g t") 'git-timemachine))
 
-; (use-package gitignore-mode)
+;; (use-package gitignore-mode)
+
+(use-package ligature
+  :config
+  ;; Enable all Iosevka ligatures in programming modes
+  (ligature-set-ligatures t '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
+                              "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                              "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
+                              ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
+  ;; Enables ligature checks globally in all buffers. You can also do it
+  ;; per mode with `ligature-mode'.
+  (global-ligature-mode t))
 
 ;;; Programming Languages
 
 (use-package csv-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
+(use-package rust-mode)
 (use-package yaml-mode)
 
 (use-package clojure-mode)
@@ -317,9 +345,16 @@
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
-  (setq lsp-sorbet-use-bundler t)
-  :hook (ruby-mode . lsp)
+
+  :hook ((ruby-mode . lsp)
+	 (ruby-ts-mode . lsp))
   :commands lsp)
+
+(use-package js-mode-defaults
+  :straight '(js-mode-defaults :type built-in)
+  :init
+  (setq js-indent-level 2)
+  (provide 'js-mode-defaults))
 
 ;;; Appearance
 
