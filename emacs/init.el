@@ -180,7 +180,7 @@
   (setq ruby-insert-encoding-magic-comment nil)
 
   ;; Add keybinding to browse URL under point/mouse
-  (global-set-key (kbd "C-c b") 'browse-url-at-point)
+  (global-set-key (kbd "C-c c b") 'browse-url-at-point)
   (global-set-key [s-mouse-1] 'browse-url-at-mouse)
 
   ;; Increase kill-ring size
@@ -238,10 +238,6 @@
   :config
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
-
-;; (use-package beframe
-;;   :init
-;;   (beframe-mode))
 
 
 ;;; Editing
@@ -474,6 +470,11 @@ current frame in a counterclockwise direction."
   (switch-to-buffer (or (car (ars/previous-files))
 			(current-buffer))))
 
+(defun ars/kill-all-buffers ()
+  "Kill all open buffers."
+  (interactive)
+  (mapcar 'kill-buffer (buffer-list)))
+
 (global-set-key (kbd "C-c w s") 'ars/shift-buffers-cw)
 (global-set-key (kbd "C-c w u") 'ars/shift-buffers-ccw)
 (global-set-key (kbd "C-c w w") 'ars/switch-to-previous-file)
@@ -482,3 +483,5 @@ current frame in a counterclockwise direction."
 (global-set-key (kbd "C-c w 3") 'ars/split-window-triple-columns)
 (global-set-key (kbd "C-c w 4") 'ars/split-window-quadruple-columns)
 (global-set-key (kbd "C-c w x") 'ars/split-window-two-by-two-grid)
+
+(global-set-key (kbd "C-c b k") 'ars/kill-all-buffers)
