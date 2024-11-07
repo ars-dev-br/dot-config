@@ -464,6 +464,28 @@ current frame in a counterclockwise direction."
     (set-window-buffer fourth-window fourth-buffer))
   (balance-windows))
 
+(defun ars/split-window-three-by-two-grid ()
+  "Set the current frame layout to a three-by-two grid."
+  (interactive)
+  (delete-other-windows)
+  (let* ((previous-files (ars/previous-files))
+	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
+	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
+	 (fourth-buffer (or (nth 2 previous-files) (current-buffer)))
+         (fifth-buffer (or (nth 3 previous-files) (current-buffer)))
+         (sixth-buffer (or (nth 4 previous-files) (current-buffer)))
+	 (second-window (split-window-right))
+         (third-window (split-window-right))
+         (fourth-window (split-window-below))
+         (fifth-window (split-window second-window nil 'below))
+         (sixth-window (split-window third-window nil 'below)))
+    (set-window-buffer second-window second-buffer)
+    (set-window-buffer third-window third-buffer)
+    (set-window-buffer fourth-window fourth-buffer)
+    (set-window-buffer fifth-window fifth-buffer)
+    (set-window-buffer sixth-window sixth-buffer))
+  (balance-windows))
+
 (defun ars/switch-to-previous-file ()
   "Switch to the most recently used file."
   (interactive)
@@ -482,6 +504,8 @@ current frame in a counterclockwise direction."
 (global-set-key (kbd "C-c w 2") 'ars/split-window-double-columns)
 (global-set-key (kbd "C-c w 3") 'ars/split-window-triple-columns)
 (global-set-key (kbd "C-c w 4") 'ars/split-window-quadruple-columns)
+
 (global-set-key (kbd "C-c w x") 'ars/split-window-two-by-two-grid)
+(global-set-key (kbd "C-c w 6") 'ars/split-window-three-by-two-grid)
 
 (global-set-key (kbd "C-c b k") 'ars/kill-all-buffers)
