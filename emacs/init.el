@@ -26,18 +26,18 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-;; (defconst ars/light-theme 'twilight-bright)
-(defconst ars/light-theme 'twilight-bright)
-(defconst ars/light-font "Iosevka Term")
-(defconst ars/light-height 120)
-(defconst ars/light-width 'regular)
-(defconst ars/light-weight 'normal)
+;; (defconst ars-theme--light-theme 'twilight-bright)
+(defconst ars-theme--light-theme 'twilight-bright)
+(defconst ars-theme--light-font "Iosevka Term")
+(defconst ars-theme--light-height 120)
+(defconst ars-theme--light-width 'regular)
+(defconst ars-theme--light-weight 'normal)
 
-(defconst ars/dark-theme 'sanityinc-tomorrow-eighties)
-(defconst ars/dark-font "Iosevka Term")
-(defconst ars/dark-height 120)
-(defconst ars/dark-width 'regular)
-(defconst ars/dark-weight 'normal)
+(defconst ars-theme--dark-theme 'sanityinc-tomorrow-eighties)
+(defconst ars-theme--dark-font "Iosevka Term")
+(defconst ars-theme--dark-height 120)
+(defconst ars-theme--dark-width 'regular)
+(defconst ars-theme--dark-weight 'normal)
 
 ;; Install themes
 
@@ -84,46 +84,46 @@
   :straight '(all-themes :type built-in)
   ; :after rose-pine
   :init
-  (load-theme ars/dark-theme t)
+  (load-theme ars-theme--dark-theme t)
   (set-face-attribute 'default nil
-		      :font ars/dark-font
-		      :height ars/dark-height
-		      :weight ars/dark-weight
-		      :width ars/dark-width)
+		      :font ars-theme--dark-font
+		      :height ars-theme--dark-height
+		      :weight ars-theme--dark-weight
+		      :width ars-theme--dark-width)
 
   (provide 'all-themes)
 
   :config
-  (defun ars/system-theme (appearance)
+  (defun ars-theme--system-theme (appearance)
     "Load theme, taking current system APPEARANCE into consideration."
     (mapc #'disable-theme custom-enabled-themes)
     (pcase appearance
-      ('light (load-theme ars/light-theme t)
+      ('light (load-theme ars-theme--light-theme t)
 	      (set-face-attribute 'default nil
-				  :font ars/light-font
-				  :height ars/light-height
-				  :weight ars/light-weight
-				  :width ars/light-width))
-      ('dark (load-theme ars/dark-theme t)
+				  :font ars-theme--light-font
+				  :height ars-theme--light-height
+				  :weight ars-theme--light-weight
+				  :width ars-theme--light-width))
+      ('dark (load-theme ars-theme--dark-theme t)
 	     (set-face-attribute 'default nil
-				 :font ars/dark-font
-				 :height ars/dark-height
-				 :weight ars/dark-weight
-				 :width ars/dark-width))))
+				 :font ars-theme--dark-font
+				 :height ars-theme--dark-height
+				 :weight ars-theme--dark-weight
+				 :width ars-theme--dark-width))))
 
-  (defun ars/toggle-theme ()
+  (defun ars-theme--toggle-theme ()
     "Toggle between a light or a dark theme."
     (interactive)
     (let ((enabled-themes custom-enabled-themes))
       (mapc #'disable-theme custom-enabled-themes)
-      (if (member ars/light-theme enabled-themes)
-	  (ars/system-theme 'dark)
-	(ars/system-theme 'light))))
+      (if (member ars-theme--light-theme enabled-themes)
+	  (ars-theme--system-theme 'dark)
+	(ars-theme--system-theme 'light))))
 
-  (add-hook 'ns-system-appearance-change-functions #'ars/system-theme)
+  (add-hook 'ns-system-appearance-change-functions #'ars-theme--system-theme)
 
   :bind
-  ("<f5>" . ars/toggle-theme))
+  ("<f5>" . ars-theme--toggle-theme))
 
 ;;;; Saner defaults
 (use-package saner-defaults
@@ -363,67 +363,67 @@
 ;; Laura Viglioni (https://github.com/Viglioni) and Sandro
 ;; Luiz (https://github.com/ansdor).
 
-(defun ars/previous-files ()
+(defun ars-window--previous-files ()
   "Returns a list of buffers visiting files skipping the current one."
   (seq-filter 'buffer-file-name
 	      (remq (current-buffer) (buffer-list))))
 
-(defun ars/shift-list (list)
+(defun ars-window--shift-list (list)
   "Returns a new list with the same elements of LIST shifted one position to the left.
-I.e. (ars/shift-list '(a b c d)) returns '(b c d a)."
+I.e. (ars-window--shift-list '(a b c d)) returns '(b c d a)."
   (let ((reversed (reverse list)))
     (reverse (cons (car list)
 		   (butlast reversed)))))
 
-(defun ars/unshift-list (list)
+(defun ars-window--unshift-list (list)
   "Returns a new list with the same elements of LIST shifted one position to the right.
-I.e. (ars/unshift-list '(a b c d)) returns '(d a b c)."
+I.e. (ars-window--unshift-list '(a b c d)) returns '(d a b c)."
   (append (last list) (butlast list)))
 
-(defun ars/rotate-list (list direction)
+(defun ars-window--rotate-list (list direction)
   "Returns a new list with the same elements of LIST shifted one
 position to the right or to the left depending on the value of
 DIRECTION (which must be either 'cw or 'ccw)."
   (if (eq direction 'cw)
-      (ars/shift-list list)
-    (ars/unshift-list list)))
+      (ars-window--shift-list list)
+    (ars-window--unshift-list list)))
 
-(defun ars/shift-buffers (direction)
+(defun ars-window--shift-buffers (direction)
   "Rotates the currently open buffers between the windows of the
 current frame. DIRECTION must be either 'cw or 'ccw."
   (let* ((buffers (mapcar #'window-buffer (window-list)))
-	 (rotated-buffers (ars/rotate-list buffers direction)))
+	 (rotated-buffers (ars-window--rotate-list buffers direction)))
     (mapc (lambda (window)
 	    (let ((window-index (seq-position (window-list) window)))
 	      (set-window-buffer window (nth window-index rotated-buffers))))
 	  (window-list))))
 
-(defun ars/shift-buffers-cw ()
+(defun ars-window--shift-buffers-cw ()
   "Rotates the currently open buffers between the windows of the
 current frame in a clockwise direction."
   (interactive)
-  (ars/shift-buffers 'cw))
+  (ars-window--shift-buffers 'cw))
 
-(defun ars/shift-buffers-ccw ()
+(defun ars-window--shift-buffers-ccw ()
   "Rotates the currently open buffers between the windows of the
 current frame in a counterclockwise direction."
   (interactive)
-  (ars/shift-buffers 'ccw))
+  (ars-window--shift-buffers 'ccw))
 
-(defun ars/split-window-double-columns ()
+(defun ars-window--split-window-double-columns ()
   "Set the current frame layout to two columns."
   (interactive)
-  (let ((previous-file (or (car (ars/previous-files))
+  (let ((previous-file (or (car (ars-window--previous-files))
 			   (current-buffer))))
     (delete-other-windows)
     (set-window-buffer (split-window-right) previous-file)
     (balance-windows)))
 
-(defun ars/split-window-triple-columns ()
+(defun ars-window--split-window-triple-columns ()
   "Set the current frame layout to three columns."
   (interactive)
   (delete-other-windows)
-  (let* ((previous-files (ars/previous-files))
+  (let* ((previous-files (ars-window--previous-files))
 	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
 	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
 	 (second-window (split-window-right))
@@ -432,11 +432,11 @@ current frame in a counterclockwise direction."
     (set-window-buffer third-window third-buffer))
   (balance-windows))
 
-(defun ars/split-window-quadruple-columns ()
+(defun ars-window--split-window-quadruple-columns ()
   "Set the current frame layout to quadruple columns."
   (interactive)
   (delete-other-windows)
-  (let* ((previous-files (ars/previous-files))
+  (let* ((previous-files (ars-window--previous-files))
 	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
 	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
 	 (fourth-buffer (or (nth 2 previous-files) (current-buffer)))
@@ -448,11 +448,11 @@ current frame in a counterclockwise direction."
     (set-window-buffer fourth-window fourth-buffer))
   (balance-windows))
 
-(defun ars/split-window-two-by-two-grid ()
+(defun ars-window--split-window-two-by-two-grid ()
   "Set the current frame layout to a two-by-two grid."
   (interactive)
   (delete-other-windows)
-  (let* ((previous-files (ars/previous-files))
+  (let* ((previous-files (ars-window--previous-files))
 	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
 	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
 	 (fourth-buffer (or (nth 2 previous-files) (current-buffer)))
@@ -464,11 +464,11 @@ current frame in a counterclockwise direction."
     (set-window-buffer fourth-window fourth-buffer))
   (balance-windows))
 
-(defun ars/split-window-three-by-two-grid ()
+(defun ars-window--split-window-three-by-two-grid ()
   "Set the current frame layout to a three-by-two grid."
   (interactive)
   (delete-other-windows)
-  (let* ((previous-files (ars/previous-files))
+  (let* ((previous-files (ars-window--previous-files))
 	 (second-buffer (or (nth 0 previous-files) (current-buffer)))
 	 (third-buffer (or (nth 1 previous-files) (current-buffer)))
 	 (fourth-buffer (or (nth 2 previous-files) (current-buffer)))
@@ -486,26 +486,26 @@ current frame in a counterclockwise direction."
     (set-window-buffer sixth-window sixth-buffer))
   (balance-windows))
 
-(defun ars/switch-to-previous-file ()
+(defun ars-window--switch-to-previous-file ()
   "Switch to the most recently used file."
   (interactive)
-  (switch-to-buffer (or (car (ars/previous-files))
+  (switch-to-buffer (or (car (ars-window--previous-files))
 			(current-buffer))))
 
-(defun ars/kill-all-buffers ()
+(defun ars-window--kill-all-buffers ()
   "Kill all open buffers."
   (interactive)
   (mapcar 'kill-buffer (buffer-list)))
 
-(global-set-key (kbd "C-c w s") 'ars/shift-buffers-cw)
-(global-set-key (kbd "C-c w u") 'ars/shift-buffers-ccw)
-(global-set-key (kbd "C-c w w") 'ars/switch-to-previous-file)
+(global-set-key (kbd "C-c w s") 'ars-window--shift-buffers-cw)
+(global-set-key (kbd "C-c w u") 'ars-window--shift-buffers-ccw)
+(global-set-key (kbd "C-c w w") 'ars-window--switch-to-previous-file)
 (global-set-key (kbd "C-c w 1") 'delete-other-windows) ; just for consistency's sake
-(global-set-key (kbd "C-c w 2") 'ars/split-window-double-columns)
-(global-set-key (kbd "C-c w 3") 'ars/split-window-triple-columns)
-(global-set-key (kbd "C-c w 4") 'ars/split-window-quadruple-columns)
+(global-set-key (kbd "C-c w 2") 'ars-window--split-window-double-columns)
+(global-set-key (kbd "C-c w 3") 'ars-window--split-window-triple-columns)
+(global-set-key (kbd "C-c w 4") 'ars-window--split-window-quadruple-columns)
 
-(global-set-key (kbd "C-c w x") 'ars/split-window-two-by-two-grid)
-(global-set-key (kbd "C-c w 6") 'ars/split-window-three-by-two-grid)
+(global-set-key (kbd "C-c w x") 'ars-window--split-window-two-by-two-grid)
+(global-set-key (kbd "C-c w 6") 'ars-window--split-window-three-by-two-grid)
 
-(global-set-key (kbd "C-c b k") 'ars/kill-all-buffers)
+(global-set-key (kbd "C-c b k") 'ars-window--kill-all-buffers)
