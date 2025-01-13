@@ -497,6 +497,19 @@ current frame in a counterclockwise direction."
   (interactive)
   (mapcar 'kill-buffer (buffer-list)))
 
+(defun ars-window--split-below-and-move-point ()
+  (interactive)
+  (split-window-below)
+  (other-window 1))
+
+(defun ars-window--split-right-and-move-point ()
+  (interactive)
+  (split-window-right)
+  (other-window 1))
+
+(global-set-key (kbd "C-c 2") 'ars-window--split-below-and-move-point)
+(global-set-key (kbd "C-c 3") 'ars-window--split-right-and-move-point)
+
 (global-set-key (kbd "C-c w s") 'ars-window--shift-buffers-cw)
 (global-set-key (kbd "C-c w u") 'ars-window--shift-buffers-ccw)
 (global-set-key (kbd "C-c w w") 'ars-window--switch-to-previous-file)
