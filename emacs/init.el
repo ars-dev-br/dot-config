@@ -27,13 +27,13 @@
 
 ;; Set appearance constants
 ;; (defconst ars-theme--light-theme 'twilight-bright)
-(defconst ars-theme--light-theme 'twilight-bright)
+(defconst ars-theme--light-theme 'modus-operandi)
 (defconst ars-theme--light-font "Aporetic Serif Mono")
 (defconst ars-theme--light-height 120)
 (defconst ars-theme--light-width 'regular)
 (defconst ars-theme--light-weight 'normal)
 
-(defconst ars-theme--dark-theme 'sanityinc-tomorrow-eighties)
+(defconst ars-theme--dark-theme 'modus-vivendi-tinted)
 (defconst ars-theme--dark-font "Aporetic Serif Mono")
 (defconst ars-theme--dark-height 120)
 (defconst ars-theme--dark-width 'regular)
@@ -41,48 +41,12 @@
 
 ;; Install themes
 
-(use-package autothemer :ensure t)
-
-(use-package color-theme-sanityinc-tomorrow)
-;; (use-package nano-theme)
-;; (use-package dracula-theme)
-;; (use-package ef-themes)
-;; (use-package gruvbox-theme)
-;; (use-package kaolin-themes)
 (use-package modus-themes :ensure)
-;; (use-package doom-themes)
-;; (use-package github-theme)
-(use-package twilight-bright-theme)
-;; (use-package sublime-themes)
-;; (use-package ample-theme)
-;; (use-package github-modern-theme)
-;; (use-package material-theme)
-(use-package base16-theme)
-
-;; I can't get use-package/straight to build everforest, not sure
-;; why. Let's just create a fake package for it and build it manually.
-(use-package everforest-theme
-  :straight '(everforest-theme :type built-in)
-  :after magit
-  :init
-  (let* ((repos-directory (file-name-concat user-emacs-directory "local-repos"))
-	 (repos-directory-exists (file-directory-p repos-directory))
-	 (everforest-directory (file-name-concat repos-directory "everforest-theme"))
-	 (everforest-directory-exists (file-directory-p everforest-directory)))
-    (unless repos-directory-exists
-      (make-directory repos-directory))
-    (unless everforest-directory-exists
-      (magit-call-git "clone"
-		      "https://git.sr.ht/~theorytoe/everforest-theme"
-		      (expand-file-name everforest-directory)))
-    (add-to-list 'custom-theme-load-path everforest-directory)
-    (provide 'everforest-theme)))
 
 ;; Make the theme change with the system (macos only) and create a
 ;; toggling binding.
 (use-package all-themes
   :straight '(all-themes :type built-in)
-  ; :after rose-pine
   :init
   (load-theme ars-theme--dark-theme t)
   (set-face-attribute 'default nil
