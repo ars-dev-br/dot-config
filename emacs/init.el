@@ -211,12 +211,13 @@
   :config
   (editorconfig-mode 1))
 
-(use-package tree-sitter)
-(use-package tree-sitter-langs
-  :after tree-sitter
+(use-package tree-sitter
   :init
+  (setq major-mode-remap-alist
+        '((ruby-mode . ruby-ts-mode)))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '( "\\.tsx\\'" . tsx-ts-mode))
   (require 'tree-sitter)
-  (require 'tree-sitter-langs)
   :hook (after-init . global-tree-sitter-mode))
 
 (use-package rainbow-delimiters
