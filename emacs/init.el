@@ -26,7 +26,6 @@
 ;;;; Appearance
 
 ;; Set appearance constants
-;; (defconst ars-theme--light-theme 'twilight-bright)
 (defconst ars-theme--light-theme 'modus-operandi)
 (defconst ars-theme--light-font "Aporetic Serif Mono")
 (defconst ars-theme--light-height 120)
@@ -40,7 +39,6 @@
 (defconst ars-theme--dark-weight 'normal)
 
 ;; Install themes
-
 (use-package modus-themes :ensure)
 
 ;; Make the theme change with the system (macos only) and create a
@@ -166,7 +164,6 @@
 (use-package multi-term)
 
 (use-package vertico
-  ; :straight (:files (:defaults "extensions/*"))
   :init (vertico-mode))
 
 (use-package orderless
@@ -274,9 +271,9 @@
   :config
   (global-set-key (kbd "C-c g l") 'git-link))
 
-;; (use-package git-timemachine
-;;   :config
-;;   (global-set-key (kbd "C-c g t") 'git-timemachine))
+(use-package git-timemachine
+  :config
+  (global-set-key (kbd "C-c g t") 'git-timemachine))
 
 ;; (use-package gitignore-mode)
 
@@ -308,7 +305,9 @@
   (setq lsp-keymap-prefix "C-c l")
 
   :hook ((ruby-mode . lsp)
-	 (ruby-ts-mode . lsp))
+	 (ruby-ts-mode . lsp)
+         (typescript-ts-mode . lsp)
+         (tsx-ts-mode . lsp))
   :commands lsp)
 
 (use-package js-mode-defaults
@@ -452,7 +451,7 @@ current frame in a counterclockwise direction."
   (balance-windows))
 
 (defun ars-window--split-window-four-by-two-grid ()
-  "Set the current frame layout to a three-by-two grid."
+  "Set the current frame layout to a four-by-two grid."
   (interactive)
   (delete-other-windows)
   (let* ((previous-files (ars-window--previous-files))
