@@ -200,6 +200,8 @@
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
 
+(use-package dired-preview)
+
 
 ;;; Editing
 
@@ -513,3 +515,77 @@ current frame in a counterclockwise direction."
 (global-set-key (kbd "C-c w 8") 'ars-window--split-window-four-by-two-grid)
 
 (global-set-key (kbd "C-c b k") 'ars-window--kill-all-buffers)
+
+;;;; org-mode
+
+(use-package org
+  :ensure t
+  :custom
+  (org-directory "~/src/ars-dev-br/pkm/")
+  (org-agenda-files '("~/src/ars-dev-br/pkm/"
+                      "~/src/ars-dev-br/pkm/journal/"))
+  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                       (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+  (org-use-fast-todo-selection t)
+  (org-agenda-custom-commands '(("n" "Agenda and all NEXT"
+                                 ((agenda "")
+                                  (todo "NEXT")))))
+  :bind (("C-c n a" . org-agenda)))
+
+(use-package org-journal
+  :init
+  (setq org-journal-prefix-key "C-c j")
+  :config
+  (setq org-journal-dir "~/src/ars-dev-br/pkm/journal")
+  (setq org-journal-date-format "%Y-%m-%d (%A, %d %B %Y)")
+  (setq org-journal-file-type 'yearly)
+  (setq org-journal-file-format "%Y.org")
+  (setq org-journal-carryover-items "")
+  :bind (("C-c n j" . org-journal-new-entry)))
+
+(use-package org-ql)
+
+(defun ars-org--sort-albums-by-artist-and-by-released ()
+  (interactive)
+  (org-sort-entries nil
+                    ?f
+                    (lambda ()
+                      (list
+                       (org-entry-get (point-marker) "ARTIST")
+                       (org-entry-get (point-marker) "RELEASED")))
+                    (lambda (a b)
+                      (let ((artist-a (nth 0 a))
+                            (artist-b (nth 0 b))
+                            (released-a (nth 1 a))
+                            (released-b (nth 1 b)))
+                        (cond
+                         ((string= artist-a artist-b) (string< released-a released-b))
+                         (t (org-string< artist-a artist-b)))))
+                    ""
+                    t))
+
+(defun ars-org--sort-books-by-author-series-and-published ()
+  (interactive)
+  (org-sort-entries nil
+                    ?f
+                    (lambda ()
+                      (list
+                       (org-entry-get (point-marker) "AUTHOR_SORT")
+                       (org-entry-get (point-marker) "SERIES")
+                       (or
+                        (org-entry-get (point-marker) "TITLE_SORT")
+                        (org-entry-get (point-marker) "TITLE"))))
+                    (lambda (a b)
+                      (let ((author-a (nth 0 a))
+                            (series-a (nth 1 a))
+                            (title-a (nth 2 a))
+                            (author-b (nth 0 b))
+                            (series-b (nth 1 b))
+                            (title-b (nth 2 b)))
+                        (cond
+                         ((and (string= author-a author-b)
+                               (string= series-a series-b)) (org-string< title-a title-b))
+                         ((string= author-a author-b) (org-string< series-a series-b))
+                         (t (org-string< author-a author-b)))))
+                    ""
+                    t))
