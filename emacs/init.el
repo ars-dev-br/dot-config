@@ -535,7 +535,10 @@ current frame in a counterclockwise direction."
   (org-agenda-custom-commands '(("n" "Agenda and all NEXT"
                                  ((agenda "")
                                   (todo "NEXT")))))
-  :bind (("C-c n a" . org-agenda)))
+  (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
+                           ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))))
+  :bind (("C-c n a" . org-agenda)
+         ("C-c n c" . org-capture)))
 
 (use-package org-journal
   :init
