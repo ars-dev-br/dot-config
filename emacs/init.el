@@ -1,3 +1,7 @@
+(setq lexical-binding t)
+
+(require 'cl-extra)
+
 ;;;; Straight
 
 ;; Bootstrap straight.el for package management
@@ -545,22 +549,47 @@ current frame in a counterclockwise direction."
 
 (use-package org-ql)
 
+(defun ars-org--getkey-gen (&rest properties)
+  "Generates a getkey-func to be used with org-sort-entries. It returns a
+lambda function that will return a list consisting of the PROPERTIES of
+the node under point.
+
+PROPERTIES can be of two types, a single STRING, which will get the
+property with such name, or a list of STRING, which will return the
+first non-nil property from the list.
+
+For example:
+
+  (ars-org--getkey-gen \"FOO\" \"BAR\")
+
+will return '(\"value-of-foo\" \"value-of-bar\"). Whereas:
+
+  (ars-org--getkey-gen \"FOO\" '(\"BAR\" \"BAZ\"))
+
+will return '(\"value-of-foo\" \"value-of-bar-or-baz\")."
+  (lambda ()
+    (mapcar
+     (lambda (property)
+       (if (listp property)
+           (let ((active-property (cl-some
+                                   (lambda (p) (org-entry-get (point-marker) p))
+                                   property)))
+             (org-entry-get (point-marker) active-property))
+         (org-entry-get (point-marker) property)))
+     properties)))
+
+(defun ars-org--compare-func (a b)
+  ""
+  (cond ((and (null a) (null b)) t)
+        ((string= (car a) (car b)) (ars-org--compare-func (cdr a) (cdr b)))
+        (t (org-string< (car a) (car b)))))
+
 (defun ars-org--sort-albums-by-artist-and-by-released ()
   (interactive)
   (org-sort-entries nil
                     ?f
-                    (lambda ()
-                      (list
-                       (org-entry-get (point-marker) "ARTIST")
-                       (org-entry-get (point-marker) "RELEASED")))
-                    (lambda (a b)
-                      (let ((artist-a (nth 0 a))
-                            (artist-b (nth 0 b))
-                            (released-a (nth 1 a))
-                            (released-b (nth 1 b)))
-                        (cond
-                         ((string= artist-a artist-b) (string< released-a released-b))
-                         (t (org-string< artist-a artist-b)))))
+                    (ars-org--getkey-gen "ARTIST" "RELEASED")
+                    #'ars-org--compare-func
                     ""
                     t))
 
@@ -568,24 +597,7 @@ current frame in a counterclockwise direction."
   (interactive)
   (org-sort-entries nil
                     ?f
-                    (lambda ()
-                      (list
-                       (org-entry-get (point-marker) "AUTHOR_SORT")
-                       (org-entry-get (point-marker) "SERIES")
-                       (or
-                        (org-entry-get (point-marker) "TITLE_SORT")
-                        (org-entry-get (point-marker) "TITLE"))))
-                    (lambda (a b)
-                      (let ((author-a (nth 0 a))
-                            (series-a (nth 1 a))
-                            (title-a (nth 2 a))
-                            (author-b (nth 0 b))
-                            (series-b (nth 1 b))
-                            (title-b (nth 2 b)))
-                        (cond
-                         ((and (string= author-a author-b)
-                               (string= series-a series-b)) (org-string< title-a title-b))
-                         ((string= author-a author-b) (org-string< series-a series-b))
-                         (t (org-string< author-a author-b)))))
+                    (ars-org--getkey-gen "AUTHOR_SORT" "SERIES" '("TITLE_SORT" "TITLE"))
+                    #'ars-org--compare-func
                     ""
                     t))
