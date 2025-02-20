@@ -536,7 +536,8 @@ current frame in a counterclockwise direction."
                                  ((agenda "")
                                   (todo "NEXT")))))
   (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
-                           ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))))
+                           ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))
+                           ("b" "Book" entry (file+headline "art.org" "Books") (file "templates/book.org"))))
   :bind (("C-c n a" . org-agenda)
          ("C-c n c" . org-capture)))
 
