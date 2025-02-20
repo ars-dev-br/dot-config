@@ -1,5 +1,6 @@
-(setq lexical-binding t)
+;;; -*- lexical-binding: t -*-
 
+(require 'cl-lib)
 (require 'cl-extra)
 
 ;;;; Straight
