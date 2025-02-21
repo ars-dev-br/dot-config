@@ -4,7 +4,6 @@
 (require 'cl-extra)
 
 ;;;; Straight
-
 ;; Bootstrap straight.el for package management
 (defvar bootstrap-version)
 (setq straight-repository-branch "develop")
@@ -29,7 +28,6 @@
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
 ;;;; Appearance
-
 ;; Set appearance constants
 (defconst ars-theme--light-theme 'modus-operandi)
 (defconst ars-theme--light-font "Aporetic Serif Mono")
@@ -157,9 +155,7 @@
 
 
 ;;;; Packages
-
 ;;; Emacs
-
 (use-package exec-path-from-shell
   :config
   (when (memq window-system '(mac ns x))
@@ -209,7 +205,6 @@
 
 
 ;;; Editing
-
 (use-package editorconfig
   :ensure t
   :config
@@ -245,7 +240,6 @@
   :hook (after-init . global-company-mode))
 
 ;;; Version Control
-
 (use-package magit
   :ensure t)
 
@@ -296,7 +290,6 @@
   (global-ligature-mode t))
 
 ;;; Programming Languages
-
 (use-package csv-mode)
 (use-package lua-mode)
 (use-package markdown-mode)
@@ -324,7 +317,6 @@
   (provide 'js-mode-defaults))
 
 ;;; Appearance
-
 ;; Make the background color of file-buffers different from other buffers.
 (use-package solaire-mode
   :hook (after-init . solaire-global-mode))
@@ -333,7 +325,6 @@
 ;; Most of these functions have been graciously provided by either
 ;; Laura Viglioni (https://github.com/Viglioni) and Sandro
 ;; Luiz (https://github.com/ansdor).
-
 (defun ars-window--previous-files ()
   "Returns a list of buffers visiting files skipping the current one."
   (seq-filter 'buffer-file-name
@@ -522,7 +513,6 @@ current frame in a counterclockwise direction."
 (global-set-key (kbd "C-c b k") 'ars-window--kill-all-buffers)
 
 ;;;; org-mode
-
 (use-package org
   :ensure t
   :custom
@@ -535,11 +525,39 @@ current frame in a counterclockwise direction."
   (org-agenda-custom-commands '(("n" "Agenda and all NEXT"
                                  ((agenda "")
                                   (todo "NEXT")))))
+  (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+                              (todo . " %i %-12:c")
+                              (tags . " %i %-12:c")
+                              (search . " %-12:c %-50:b")))
   (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
                            ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))
                            ("b" "Book" entry (file+headline "art.org" "Books") (file "templates/book.org"))))
+  (org-tag-alist '((:startgrouptag)
+                   ("media")
+                   (:grouptags)
+                   ("album") ("book") ("film") ("game") ("podcast") ("tv-show")
+                   (:endgrouptag)
+
+                   (:startgrouptag)
+                   ("health")
+                   (:grouptags)
+                   ("medicine")
+                   (:endgrouptag)
+
+                   (:startgrouptag)
+                   ("family")
+                   (:grouptags)
+                   ("myself") ("hypatia") ("isolda")
+                   (:endgrouptag)
+
+                   (:startgrouptag)
+                   ("mental-health")
+                   (:grouptags)
+                   ("gratitude") ("auto_obs")
+                   (:endgrouptag)))
   :bind (("C-c n a" . org-agenda)
-         ("C-c n c" . org-capture)))
+         ("C-c n c" . org-capture)
+         ("C-c n s" . org-search-view)))
 
 (use-package org-journal
   :init
@@ -584,25 +602,18 @@ will return '(\"value-of-foo\" \"value-of-bar-or-baz\")."
      properties)))
 
 (defun ars-org--compare-func (a b)
-  ""
+  "Recursively compare two lists of same length A and B. If the first
+element is equal, compare the second, and so forth."
   (cond ((and (null a) (null b)) t)
         ((string= (car a) (car b)) (ars-org--compare-func (cdr a) (cdr b)))
         (t (org-string< (car a) (car b)))))
 
 (defun ars-org--sort-albums-by-artist-and-by-released ()
   (interactive)
-  (org-sort-entries nil
-                    ?f
-                    (ars-org--getkey-gen "ARTIST" "RELEASED")
-                    #'ars-org--compare-func
-                    ""
-                    t))
+  (org-sort-entries nil ?f (ars-org--getkey-gen "ARTIST" "RELEASED")
+                    #'ars-org--compare-func "" t))
 
 (defun ars-org--sort-books-by-author-series-and-published ()
   (interactive)
-  (org-sort-entries nil
-                    ?f
-                    (ars-org--getkey-gen "AUTHOR_SORT" "SERIES" '("TITLE_SORT" "TITLE"))
-                    #'ars-org--compare-func
-                    ""
-                    t))
+  (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "SERIES" '("TITLE_SORT" "TITLE"))
+                    #'ars-org--compare-func "" t))
