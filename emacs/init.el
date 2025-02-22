@@ -100,6 +100,7 @@
   (tool-bar-mode -1)
   (menu-bar-mode 1)
   (repeat-mode 1)
+  (which-key-mode 1)
   (add-hook 'after-init-hook #'global-display-line-numbers-mode)
   (setq frame-resize-pixelwise t)
   (setq-default indent-tabs-mode nil)
@@ -519,9 +520,13 @@ current frame in a counterclockwise direction."
   (org-directory "~/src/ars-dev-br/pkm/")
   (org-agenda-files '("~/src/ars-dev-br/pkm/"
                       "~/src/ars-dev-br/pkm/journal/"))
+
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
   (org-use-fast-todo-selection t)
+
+  (org-startup-folded t)
+
   (org-agenda-custom-commands '(("n" "Agenda and all NEXT"
                                  ((agenda "")
                                   (todo "NEXT")))))
@@ -529,9 +534,12 @@ current frame in a counterclockwise direction."
                               (todo . " %i %-12:c")
                               (tags . " %i %-12:c")
                               (search . " %-12:c %-50:b")))
+  (org-agenda-start-on-weekday nil)
+
   (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
                            ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))
                            ("b" "Book" entry (file+headline "art.org" "Books") (file "templates/book.org"))))
+
   (org-tag-alist '((:startgrouptag)
                    ("media")
                    (:grouptags)
@@ -555,11 +563,13 @@ current frame in a counterclockwise direction."
                    (:grouptags)
                    ("gratitude") ("auto_obs")
                    (:endgrouptag)))
+
   :bind (("C-c n a" . org-agenda)
          ("C-c n c" . org-capture)
          ("C-c n s" . org-search-view)))
 
 (use-package org-journal
+  :after org
   :init
   (setq org-journal-prefix-key "C-c j")
   :config
@@ -570,7 +580,7 @@ current frame in a counterclockwise direction."
   (setq org-journal-carryover-items "")
   :bind (("C-c n j" . org-journal-new-entry)))
 
-(use-package org-ql)
+(use-package org-ql :after org)
 
 (defun ars-org--getkey-gen (&rest properties)
   "Generates a getkey-func to be used with org-sort-entries. It returns a
@@ -617,3 +627,24 @@ element is equal, compare the second, and so forth."
   (interactive)
   (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "SERIES" '("TITLE_SORT" "TITLE"))
                     #'ars-org--compare-func "" t))
+
+(defun ars-org--random-entry ()
+  (interactive)
+  (let ((files (org-agenda-files))
+        (all-markers nil)
+        lucky-marker)
+    (org-map-entries (lambda ()
+                       (setq all-markers
+                             (push (point-marker) all-markers)))
+                     t
+                     files
+                     :archive)
+    (setq lucky-marker (nth (random (safe-length all-markers)) all-markers))
+    (org-pop-to-buffer-same-window (marker-buffer lucky-marker))
+    (widen)
+    (goto-char (marker-position lucky-marker))
+    (when (derived-mode-p 'org-mode)
+      (org-show-context 'agenda)
+      (run-hooks 'org-agenda-after-show-hook))))
+
+(global-set-key (kbd "C-c n r") 'ars-org--random-entry)
