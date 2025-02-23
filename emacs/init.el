@@ -521,11 +521,11 @@ current frame in a counterclockwise direction."
   (org-agenda-files '("~/src/ars-dev-br/pkm/"
                       "~/src/ars-dev-br/pkm/journal/"))
 
+  (org-startup-folded t)
+
+  (org-use-fast-todo-selection t)
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
-  (org-use-fast-todo-selection t)
-
-  (org-startup-folded t)
 
   (org-agenda-custom-commands '(("n" "Agenda and all NEXT"
                                  ((agenda "")
@@ -540,10 +540,11 @@ current frame in a counterclockwise direction."
                            ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))
                            ("b" "Book" entry (file+headline "art.org" "Books") (file "templates/book.org"))))
 
+  (org-tags-column -95)
   (org-tag-alist '((:startgrouptag)
                    ("media")
                    (:grouptags)
-                   ("album") ("book") ("film") ("game") ("podcast") ("tv-show")
+                   ("album") ("book") ("film") ("game") ("podcast") ("tv_show")
                    (:endgrouptag)
 
                    (:startgrouptag)
@@ -563,6 +564,8 @@ current frame in a counterclockwise direction."
                    (:grouptags)
                    ("gratitude") ("auto_obs")
                    (:endgrouptag)))
+
+  (org-property-format "%-18s %s")
 
   :bind (("C-c n a" . org-agenda)
          ("C-c n c" . org-capture)
@@ -638,13 +641,13 @@ element is equal, compare the second, and so forth."
                              (push (point-marker) all-markers)))
                      t
                      files
-                     :archive)
+                     'archive)
     (setq lucky-marker (nth (random (safe-length all-markers)) all-markers))
     (org-pop-to-buffer-same-window (marker-buffer lucky-marker))
     (widen)
     (goto-char (marker-position lucky-marker))
     (when (derived-mode-p 'org-mode)
-      (org-show-context 'agenda)
+      (org-fold-show-context 'tree)
       (run-hooks 'org-agenda-after-show-hook))))
 
 (global-set-key (kbd "C-c n r") 'ars-org--random-entry)
