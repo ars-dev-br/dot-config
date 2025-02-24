@@ -202,8 +202,6 @@
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
 
-(use-package dired-preview)
-
 
 ;;; Editing
 (use-package editorconfig
@@ -527,8 +525,8 @@ current frame in a counterclockwise direction."
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
-  (org-agenda-custom-commands '(("n" "Agenda and all NEXT"
-                                 ((agenda "")
+  (org-agenda-custom-commands '(("n" "Today agenda and all NEXT"
+                                 ((agenda "" ((org-agenda-span 'day)))
                                   (todo "NEXT")))))
   (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
                               (todo . " %i %-12:c")
@@ -537,8 +535,8 @@ current frame in a counterclockwise direction."
   (org-agenda-start-on-weekday nil)
 
   (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
-                           ("a" "Album" entry (file+headline "art.org" "Albums") (file "templates/album.org"))
-                           ("b" "Book" entry (file+headline "art.org" "Books") (file "templates/book.org"))))
+                           ("a" "Album" entry (file+headline "references.org" "Albums") (file "templates/album.org"))
+                           ("b" "Book" entry (file+headline "references.org" "Books") (file "templates/book.org"))))
 
   (org-tags-column -95)
   (org-tag-alist '((:startgrouptag)
@@ -581,6 +579,7 @@ current frame in a counterclockwise direction."
   (setq org-journal-file-type 'yearly)
   (setq org-journal-file-format "%Y.org")
   (setq org-journal-carryover-items "")
+  (setq org-journal-find-file-fn 'find-file-other-window)
   :bind (("C-c n j" . org-journal-new-entry)))
 
 (use-package org-ql :after org)
