@@ -520,6 +520,7 @@ current frame in a counterclockwise direction."
                       "~/src/ars-dev-br/pkm/journal/"))
 
   (org-startup-folded t)
+  (org-read-date-force-compatible-dates nil)
 
   (org-use-fast-todo-selection t)
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
@@ -606,10 +607,7 @@ will return '(\"value-of-foo\" \"value-of-bar-or-baz\")."
     (mapcar
      (lambda (property)
        (if (listp property)
-           (let ((active-property (cl-some
-                                   (lambda (p) (org-entry-get (point-marker) p))
-                                   property)))
-             (org-entry-get (point-marker) active-property))
+           (cl-some (lambda (p) (org-entry-get (point-marker) p)) property)
          (org-entry-get (point-marker) property)))
      properties)))
 
@@ -625,9 +623,14 @@ element is equal, compare the second, and so forth."
   (org-sort-entries nil ?f (ars-org--getkey-gen "ARTIST" "RELEASED")
                     #'ars-org--compare-func "" t))
 
-(defun ars-org--sort-books-by-author-series-and-published ()
+(defun ars-org--sort-books-by-author-series-and-title ()
   (interactive)
   (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "SERIES" '("TITLE_SORT" "TITLE"))
+                    #'ars-org--compare-func "" t))
+
+(defun ars-org--sort-books-by-author-and-published ()
+  (interactive)
+  (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "PUBLISHED" "SERIES")
                     #'ars-org--compare-func "" t))
 
 (defun ars-org--random-entry ()
