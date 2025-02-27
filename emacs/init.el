@@ -526,12 +526,26 @@ current frame in a counterclockwise direction."
   (org-read-date-force-compatible-dates nil)
 
   (org-use-fast-todo-selection t)
-  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                       (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+  (org-todo-keywords '((sequence "TODO(t)"
+                                 "NEXT(n)"
+                                 "WAITING(w@/!)"
+                                 "HOLD(h@/!)"
+                                 "SOMEDAY(s)"
+                                 "|"
+                                 "DONE(d)"
+                                 "CANCELLED(c@/!)")))
+  (org-todo-keyword-faces '(("SOMEDAY" . "slate gray")
+                            ("WAITING" . "goldenrod")
+                            ("HOLD" . "chocolate")
+                            ("NEXT" . "indian red")
+                            ("CANCELLED" . "forest green")))
 
   (org-agenda-custom-commands '(("n" "Today agenda and all NEXT"
                                  ((agenda "" ((org-agenda-span 'day)))
-                                  (todo "NEXT")))))
+                                  (todo "NEXT")
+                                  (todo "WAITING")
+                                  (todo "HOLD")
+                                  (todo "SOMEDAY")))))
   (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
                               (todo . " %i %-12:c")
                               (tags . " %i %-12:c")
