@@ -303,7 +303,10 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
 
-  :hook ((ruby-mode . lsp)
+  :hook ((javascript-mode . lsp)
+         (javascript-ts-mode . lsp)
+         (js-mode . lsp)
+         (ruby-mode . lsp)
 	 (ruby-ts-mode . lsp)
          (typescript-ts-mode . lsp)
          (tsx-ts-mode . lsp))
