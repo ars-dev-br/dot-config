@@ -525,6 +525,8 @@ current frame in a counterclockwise direction."
   (org-startup-folded t)
   (org-read-date-force-compatible-dates nil)
 
+  (org-refile-targets '((org-agenda-files :maxlevel . 5)))
+
   (org-use-fast-todo-selection t)
   (org-todo-keywords '((sequence "TODO(t)"
                                  "NEXT(n)"
@@ -554,13 +556,17 @@ current frame in a counterclockwise direction."
 
   (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
                            ("a" "Album" entry (file+headline "references.org" "Albums") (file "templates/album.org"))
-                           ("b" "Book" entry (file+headline "references.org" "Books") (file "templates/book.org"))))
+                           ("b" "Book" entry (file+headline "references.org" "Books") (file "templates/book.org"))
+                           ("l" "Link" entry (file+headline "references.org" "Bookmarks")
+                            "* SOMEDAY %(org-cliplink-capture)\n:PROPERTIES:\n:CREATED:          %U\n:END:")
+                           ("j" "Journal" plain (function ars-org--org-journal-find-location)
+                            "** %(format-time-string org-journal-time-format)%^{Title}\n%?")))
 
   (org-tags-column -95)
   (org-tag-alist '((:startgrouptag)
                    ("media")
                    (:grouptags)
-                   ("album") ("book") ("film") ("game") ("podcast") ("tv_show")
+                   ("album") ("book") ("film") ("game") ("podcast") ("tv_show") ("videocast")
                    (:endgrouptag)
 
                    (:startgrouptag)
@@ -597,10 +603,11 @@ current frame in a counterclockwise direction."
   (setq org-journal-file-type 'yearly)
   (setq org-journal-file-format "%Y.org")
   (setq org-journal-carryover-items "")
-  (setq org-journal-find-file-fn 'find-file-other-window)
+  (setq org-journal-find-file-fn 'find-file)
   :bind (("C-c n j" . org-journal-new-entry)))
 
 (use-package org-ql :after org)
+(use-package org-cliplink :after org)
 
 (defun ars-org--getkey-gen (&rest properties)
   "Generates a getkey-func to be used with org-sort-entries. It returns a
@@ -637,7 +644,7 @@ element is equal, compare the second, and so forth."
 
 (defun ars-org--sort-albums-by-artist-and-by-released ()
   (interactive)
-  (org-sort-entries nil ?f (ars-org--getkey-gen "ARTIST" "RELEASED")
+  (org-sort-entries nil ?f (ars-org--getkey-gen "ARTIST" "RELEASED" "TITLE")
                     #'ars-org--compare-func "" t))
 
 (defun ars-org--sort-books-by-author-series-and-title ()
@@ -647,7 +654,7 @@ element is equal, compare the second, and so forth."
 
 (defun ars-org--sort-books-by-author-and-published ()
   (interactive)
-  (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "PUBLISHED" "SERIES")
+  (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "PUBLISHED" "SERIES" "TITLE")
                     #'ars-org--compare-func "" t))
 
 (defun ars-org--random-entry ()
@@ -668,5 +675,9 @@ element is equal, compare the second, and so forth."
     (when (derived-mode-p 'org-mode)
       (org-fold-show-context 'tree)
       (run-hooks 'org-agenda-after-show-hook))))
+
+(defun ars-org--org-journal-find-location ()
+  (org-journal-new-entry t)
+  (goto-char (point-max)))
 
 (global-set-key (kbd "C-c n r") 'ars-org--random-entry)
