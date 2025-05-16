@@ -238,12 +238,22 @@
   (setq company-idle-delay 0.5)
   :hook (after-init . global-company-mode))
 
+;;; AI
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t)
 
 (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
 (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+(use-package gptel
+  :config
+
+  (setq gptel-api-key 'gptel-api-key-from-auth-source)
+  (setq gptel-model 'claude-3-7-sonnet-20250219)
+  (setq gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t
+                        :key 'gptel-api-key-from-auth-source)))
 
 ;;; Version Control
 (use-package magit
