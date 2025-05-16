@@ -238,6 +238,13 @@
   (setq company-idle-delay 0.5)
   :hook (after-init . global-company-mode))
 
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  :ensure t)
+
+(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
 ;;; Version Control
 (use-package magit
   :ensure t)
