@@ -544,6 +544,8 @@ current frame in a counterclockwise direction."
 
   (org-agenda-custom-commands '(("n" "Today agenda and all NEXT"
                                  ((agenda "" ((org-agenda-span 'day)))
+                                  (tags "-{.*}" ((org-agenda-overriding-header "Inbox")
+                                                 (org-agenda-files '("~/src/ars-dev-br/pkm/inbox.org"))))
                                   (todo "NEXT")
                                   (todo "WAITING")
                                   (todo "HOLD")
