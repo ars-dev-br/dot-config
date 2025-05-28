@@ -317,18 +317,17 @@
 (use-package cider
   :after clojure-mode)
 
-(use-package lsp-mode
+(use-package eglot-defaults
+  :straight '(eglot-defaults :type built-in)
   :init
-  (setq lsp-keymap-prefix "C-c l")
-
-  :hook ((javascript-mode . lsp)
-         (javascript-ts-mode . lsp)
-         (js-mode . lsp)
-         (ruby-mode . lsp)
-	 (ruby-ts-mode . lsp)
-         (typescript-ts-mode . lsp)
-         (tsx-ts-mode . lsp))
-  :commands lsp)
+  (provide 'eglot-defaults)
+  :hook ((javascript-mode . eglot-ensure)
+         (javascript-ts-mode . eglot-ensure)
+         (js-mode . eglot-ensure)
+         (ruby-mode . eglot-ensure)
+ 	 (ruby-ts-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (tsx-ts-mode . eglot-ensure)))
 
 (use-package js-mode-defaults
   :straight '(js-mode-defaults :type built-in)
