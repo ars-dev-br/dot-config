@@ -29,13 +29,13 @@
 
 ;;;; Appearance
 ;; Set appearance constants
-(defconst ars-theme--light-theme 'modus-operandi)
+(defconst ars-theme--light-theme 'ef-light)
 (defconst ars-theme--light-font "Aporetic Serif Mono")
 (defconst ars-theme--light-height 120)
 (defconst ars-theme--light-width 'regular)
 (defconst ars-theme--light-weight 'normal)
 
-(defconst ars-theme--dark-theme 'modus-vivendi-tinted)
+(defconst ars-theme--dark-theme 'ef-elea-dark)
 (defconst ars-theme--dark-font "Aporetic Serif Mono")
 (defconst ars-theme--dark-height 120)
 (defconst ars-theme--dark-width 'regular)
@@ -43,6 +43,7 @@
 
 ;; Install themes
 (use-package modus-themes :ensure)
+(use-package ef-themes)
 
 ;; Make the theme change with the system (macos only) and create a
 ;; toggling binding.
