@@ -250,6 +250,12 @@
                         :stream t
                         :key 'gptel-api-key-from-auth-source)))
 
+(use-package aider
+  :config
+  (setq aider-args '("--model" "sonnet" "--no-auto-accept-architect"))
+  (global-set-key (kbd "C-c a") 'aider-transient-menu))
+
+
 ;;; Version Control
 (use-package magit
   :ensure t)
