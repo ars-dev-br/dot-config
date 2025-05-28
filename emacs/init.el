@@ -203,6 +203,8 @@
   (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
 
+(use-package vundo)
+
 
 ;;; Editing
 (use-package editorconfig
