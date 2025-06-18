@@ -30,13 +30,13 @@
 ;;;; Appearance
 ;; Set appearance constants
 (defconst ars-theme--light-theme 'ef-light)
-(defconst ars-theme--light-font "Aporetic Serif Mono")
+(defconst ars-theme--light-font "Aporetic Sans Mono")
 (defconst ars-theme--light-height 120)
 (defconst ars-theme--light-width 'regular)
 (defconst ars-theme--light-weight 'normal)
 
 (defconst ars-theme--dark-theme 'ef-elea-dark)
-(defconst ars-theme--dark-font "Aporetic Serif Mono")
+(defconst ars-theme--dark-font "Aporetic Sans Mono")
 (defconst ars-theme--dark-height 120)
 (defconst ars-theme--dark-width 'regular)
 (defconst ars-theme--dark-weight 'normal)
@@ -152,6 +152,9 @@
 
   ;; Increase kill-ring size
   (setq kill-ring-max 10000)
+
+  ;; Unset cmd-q to exit emacs
+  (global-unset-key (kbd "s-q"))
 
   (provide 'saner-defaults))
 
@@ -572,6 +575,13 @@ current frame in a counterclockwise direction."
                               (tags . " %i %-12:c")
                               (search . " %-12:c %-50:b")))
   (org-agenda-start-on-weekday nil)
+  (org-agenda-time-grid '((daily today require-timed remove-match)
+                          (600 630 700 730 800 830 900 930 1000 1030 1100 1130
+                               1200 1230 1300 1330 1400 1430 1500 1530 1600 1630
+                               1700 1730 1800 1830 1900 1930 2000 2030 2100 2130
+                               2200)
+                          " ┄┄┄┄┄ "
+                          "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
 
   (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
                            ("a" "Album" entry (file+headline "references.org" "Albums") (file "templates/album.org"))
