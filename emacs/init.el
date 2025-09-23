@@ -29,21 +29,20 @@
 
 ;;;; Appearance
 ;; Set appearance constants
-(defconst ars-theme--light-theme 'ef-light)
-(defconst ars-theme--light-font "Aporetic Sans Mono")
+(defconst ars-theme--light-theme 'modus-operandi)
+(defconst ars-theme--light-font "Iosevka Term")
 (defconst ars-theme--light-height 120)
 (defconst ars-theme--light-width 'regular)
-(defconst ars-theme--light-weight 'normal)
+(defconst ars-theme--light-weight 'regular)
 
-(defconst ars-theme--dark-theme 'ef-elea-dark)
-(defconst ars-theme--dark-font "Aporetic Sans Mono")
+(defconst ars-theme--dark-theme 'modus-vivendi)
+(defconst ars-theme--dark-font "Iosevka Term")
 (defconst ars-theme--dark-height 120)
 (defconst ars-theme--dark-width 'regular)
-(defconst ars-theme--dark-weight 'normal)
+(defconst ars-theme--dark-weight 'medium)
 
 ;; Install themes
-(use-package modus-themes :ensure)
-(use-package ef-themes)
+(use-package modus-themes :ensure t)
 
 ;; Make the theme change with the system (macos only) and create a
 ;; toggling binding.
@@ -102,7 +101,7 @@
   (menu-bar-mode 1)
   (repeat-mode 1)
   (which-key-mode 1)
-  (add-hook 'after-init-hook #'global-display-line-numbers-mode)
+  ;; (add-hook 'after-init-hook #'global-display-line-numbers-mode)
   (setq frame-resize-pixelwise t)
   (setq-default indent-tabs-mode nil)
 
@@ -253,11 +252,6 @@
                         :stream t
                         :key 'gptel-api-key-from-auth-source)))
 
-(use-package aider
-  :config
-  (setq aider-args '("--model" "sonnet" "--no-auto-accept-architect"))
-  (global-set-key (kbd "C-c a") 'aider-transient-menu))
-
 
 ;;; Version Control
 (use-package magit
@@ -296,18 +290,6 @@
   :config
   (global-set-key (kbd "C-c g t") 'git-timemachine))
 
-;; (use-package gitignore-mode)
-
-(use-package ligature
-  :config
-  ;; Enable all Iosevka ligatures in programming modes
-  (ligature-set-ligatures t '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
-                              "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
-                              "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
-                              ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
-  ;; Enables ligature checks globally in all buffers. You can also do it
-  ;; per mode with `ligature-mode'.
-  (global-ligature-mode t))
 
 ;;; Programming Languages
 (use-package csv-mode)
@@ -320,23 +302,22 @@
 (use-package cider
   :after clojure-mode)
 
-(use-package eglot-defaults
-  :straight '(eglot-defaults :type built-in)
-  :init
-  (provide 'eglot-defaults)
-  :hook ((javascript-mode . eglot-ensure)
-         (javascript-ts-mode . eglot-ensure)
-         (js-mode . eglot-ensure)
-         (ruby-mode . eglot-ensure)
- 	 (ruby-ts-mode . eglot-ensure)
-         (typescript-ts-mode . eglot-ensure)
-         (tsx-ts-mode . eglot-ensure)))
-
 (use-package js-mode-defaults
   :straight '(js-mode-defaults :type built-in)
   :init
   (setq js-indent-level 2)
   (provide 'js-mode-defaults))
+
+(use-package lsp-mode
+  :init(setq lsp-keymap-prefix "C-c l")
+  :hook ((javascript-mode . lsp)
+         (javascript-ts-mode . lsp)
+         (js-mode . lsp)
+         (ruby-mode . lsp)
+         (ruby-ts-mode . lsp)
+         (typescript-ts-mode . lsp)
+         (tsx-ts-mode . lsp))
+  :commands lsp)
 
 ;;; Appearance
 ;; Make the background color of file-buffers different from other buffers.
@@ -533,180 +514,3 @@ current frame in a counterclockwise direction."
 (global-set-key (kbd "C-c w 8") 'ars-window--split-window-four-by-two-grid)
 
 (global-set-key (kbd "C-c b k") 'ars-window--kill-all-buffers)
-
-;;;; org-mode
-(use-package org
-  :ensure t
-  :custom
-  (org-directory "~/src/ars-dev-br/pkm/")
-  (org-agenda-files '("~/src/ars-dev-br/pkm/"
-                      "~/src/ars-dev-br/pkm/journal/"))
-
-  (org-startup-folded t)
-  (org-read-date-force-compatible-dates nil)
-
-  (org-refile-targets '((org-agenda-files :maxlevel . 5)))
-
-  (org-use-fast-todo-selection t)
-  (org-todo-keywords '((sequence "TODO(t)"
-                                 "NEXT(n)"
-                                 "WAITING(w@/!)"
-                                 "HOLD(h@/!)"
-                                 "SOMEDAY(s)"
-                                 "|"
-                                 "DONE(d)"
-                                 "CANCELLED(c@/!)")))
-  (org-todo-keyword-faces '(("SOMEDAY" . "slate gray")
-                            ("WAITING" . "goldenrod")
-                            ("HOLD" . "chocolate")
-                            ("NEXT" . "indian red")
-                            ("CANCELLED" . "forest green")))
-
-  (org-agenda-custom-commands '(("n" "Today agenda and all NEXT"
-                                 ((agenda "" ((org-agenda-span 'day)))
-                                  (tags "-{.*}" ((org-agenda-overriding-header "Inbox")
-                                                 (org-agenda-files '("~/src/ars-dev-br/pkm/inbox.org"))))
-                                  (todo "NEXT")
-                                  (todo "WAITING")
-                                  (todo "HOLD")
-                                  (todo "SOMEDAY")))))
-  (org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
-                              (todo . " %i %-12:c")
-                              (tags . " %i %-12:c")
-                              (search . " %-12:c %-50:b")))
-  (org-agenda-start-on-weekday nil)
-  (org-agenda-time-grid '((daily today require-timed remove-match)
-                          (600 630 700 730 800 830 900 930 1000 1030 1100 1130
-                               1200 1230 1300 1330 1400 1430 1500 1530 1600 1630
-                               1700 1730 1800 1830 1900 1930 2000 2030 2100 2130
-                               2200)
-                          " ┄┄┄┄┄ "
-                          "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
-
-  (org-capture-templates '(("t" "Todo" entry (file "inbox.org") "* TODO %?")
-                           ("a" "Album" entry (file+headline "references.org" "Albums") (file "templates/album.org"))
-                           ("b" "Book" entry (file+headline "references.org" "Books") (file "templates/book.org"))
-                           ("l" "Link" entry (file+headline "references.org" "Bookmarks")
-                            "* SOMEDAY %(org-cliplink-capture)\n:PROPERTIES:\n:CREATED:          %U\n:END:")
-                           ("j" "Journal" plain (function ars-org--org-journal-find-location)
-                            "** %(format-time-string org-journal-time-format)%^{Title}\n%?")))
-
-  (org-tags-column -95)
-  (org-tag-alist '((:startgrouptag)
-                   ("media")
-                   (:grouptags)
-                   ("album") ("book") ("film") ("game") ("podcast") ("tv_show") ("videocast")
-                   (:endgrouptag)
-
-                   (:startgrouptag)
-                   ("health")
-                   (:grouptags)
-                   ("medicine")
-                   (:endgrouptag)
-
-                   (:startgrouptag)
-                   ("family")
-                   (:grouptags)
-                   ("myself") ("hypatia") ("isolda")
-                   (:endgrouptag)
-
-                   (:startgrouptag)
-                   ("mental-health")
-                   (:grouptags)
-                   ("gratitude") ("auto_obs")
-                   (:endgrouptag)))
-
-  (org-property-format "%-18s %s")
-
-  :bind (("C-c n a" . org-agenda)
-         ("C-c n c" . org-capture)
-         ("C-c n s" . org-search-view)))
-
-(use-package org-journal
-  :after org
-  :init
-  (setq org-journal-prefix-key "C-c j")
-  :config
-  (setq org-journal-dir "~/src/ars-dev-br/pkm/journal")
-  (setq org-journal-date-format "%Y-%m-%d (%A, %d %B %Y)")
-  (setq org-journal-file-type 'yearly)
-  (setq org-journal-file-format "%Y.org")
-  (setq org-journal-carryover-items "")
-  (setq org-journal-find-file-fn 'find-file)
-  :bind (("C-c n j" . org-journal-new-entry)))
-
-(use-package org-ql :after org)
-(use-package org-cliplink :after org)
-
-(defun ars-org--getkey-gen (&rest properties)
-  "Generates a getkey-func to be used with org-sort-entries. It returns a
-lambda function that will return a list consisting of the PROPERTIES of
-the node under point.
-
-PROPERTIES can be of two types, a single STRING, which will get the
-property with such name, or a list of STRING, which will return the
-first non-nil property from the list.
-
-For example:
-
-  (ars-org--getkey-gen \"FOO\" \"BAR\")
-
-will return '(\"value-of-foo\" \"value-of-bar\"). Whereas:
-
-  (ars-org--getkey-gen \"FOO\" '(\"BAR\" \"BAZ\"))
-
-will return '(\"value-of-foo\" \"value-of-bar-or-baz\")."
-  (lambda ()
-    (mapcar
-     (lambda (property)
-       (if (listp property)
-           (cl-some (lambda (p) (org-entry-get (point-marker) p)) property)
-         (org-entry-get (point-marker) property)))
-     properties)))
-
-(defun ars-org--compare-func (a b)
-  "Recursively compare two lists of same length A and B. If the first
-element is equal, compare the second, and so forth."
-  (cond ((and (null a) (null b)) t)
-        ((string= (car a) (car b)) (ars-org--compare-func (cdr a) (cdr b)))
-        (t (org-string< (car a) (car b)))))
-
-(defun ars-org--sort-albums-by-artist-and-by-released ()
-  (interactive)
-  (org-sort-entries nil ?f (ars-org--getkey-gen "ARTIST" "RELEASED" "TITLE")
-                    #'ars-org--compare-func "" t))
-
-(defun ars-org--sort-books-by-author-series-and-title ()
-  (interactive)
-  (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "SERIES" '("TITLE_SORT" "TITLE"))
-                    #'ars-org--compare-func "" t))
-
-(defun ars-org--sort-books-by-author-and-published ()
-  (interactive)
-  (org-sort-entries nil ?f (ars-org--getkey-gen "AUTHOR_SORT" "PUBLISHED" "SERIES" "TITLE")
-                    #'ars-org--compare-func "" t))
-
-(defun ars-org--random-entry ()
-  (interactive)
-  (let ((files (org-agenda-files))
-        (all-markers nil)
-        lucky-marker)
-    (org-map-entries (lambda ()
-                       (setq all-markers
-                             (push (point-marker) all-markers)))
-                     t
-                     files
-                     'archive)
-    (setq lucky-marker (nth (random (safe-length all-markers)) all-markers))
-    (org-pop-to-buffer-same-window (marker-buffer lucky-marker))
-    (widen)
-    (goto-char (marker-position lucky-marker))
-    (when (derived-mode-p 'org-mode)
-      (org-fold-show-context 'tree)
-      (run-hooks 'org-agenda-after-show-hook))))
-
-(defun ars-org--org-journal-find-location ()
-  (org-journal-new-entry t)
-  (goto-char (point-max)))
-
-(global-set-key (kbd "C-c n r") 'ars-org--random-entry)
