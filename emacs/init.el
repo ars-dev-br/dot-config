@@ -30,14 +30,14 @@
 ;;;; Appearance
 ;; Set appearance constants
 (defconst ars-theme--light-theme 'modus-operandi)
-(defconst ars-theme--light-font "Iosevka Term")
-(defconst ars-theme--light-height 120)
+(defconst ars-theme--light-font "Iosevka")
+(defconst ars-theme--light-height 105)
 (defconst ars-theme--light-width 'regular)
-(defconst ars-theme--light-weight 'regular)
+(defconst ars-theme--light-weight 'medium)
 
 (defconst ars-theme--dark-theme 'modus-vivendi)
-(defconst ars-theme--dark-font "Iosevka Term")
-(defconst ars-theme--dark-height 120)
+(defconst ars-theme--dark-font "Iosevka")
+(defconst ars-theme--dark-height 105)
 (defconst ars-theme--dark-width 'regular)
 (defconst ars-theme--dark-weight 'medium)
 
@@ -166,7 +166,6 @@
     (exec-path-from-shell-initialize)))
 
 (use-package rg)
-(use-package multi-term)
 
 (use-package vertico
   :init (vertico-mode))
@@ -197,13 +196,11 @@
 
 (use-package embark-consult
   :after (embark consult)
-  :demand t
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package avy
-  :config
-  (global-set-key (kbd "C-c SPC") 'avy-goto-char-timer)
-  (global-set-key (kbd "C-c C-SPC") 'avy-goto-char-timer))
+  :bind (("C-c SPC" . avy-goto-char-timer)
+         ("C-c C-SPC" . avy-goto-char-timer)))
 
 (use-package vundo)
 
@@ -213,15 +210,6 @@
   :ensure t
   :config
   (editorconfig-mode 1))
-
-(use-package tree-sitter
-  :init
-  (setq major-mode-remap-alist
-        '((ruby-mode . ruby-ts-mode)))
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  (add-to-list 'auto-mode-alist '( "\\.tsx\\'" . tsx-ts-mode))
-  (require 'tree-sitter)
-  :hook (after-init . global-tree-sitter-mode))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -244,13 +232,7 @@
   :hook (after-init . global-company-mode))
 
 ;;; AI
-(use-package gptel
-  :config
-  (setq gptel-api-key 'gptel-api-key-from-auth-source)
-  (setq gptel-model 'claude-3-7-sonnet-20250219)
-  (setq gptel-backend (gptel-make-anthropic "Claude"
-                        :stream t
-                        :key 'gptel-api-key-from-auth-source)))
+
 
 
 ;;; Version Control
@@ -283,18 +265,15 @@
   nil nil 'center))
 
 (use-package git-link
-  :config
-  (global-set-key (kbd "C-c g l") 'git-link))
+  :bind ("C-c g l" . git-link))
 
 (use-package git-timemachine
-  :config
-  (global-set-key (kbd "C-c g t") 'git-timemachine))
+  :bind ("C-c g t" . git-timemachine))
 
 
 ;;; Programming Languages
 (use-package csv-mode)
 (use-package lua-mode)
-(use-package markdown-mode)
 (use-package rust-mode)
 (use-package yaml-mode)
 
@@ -309,7 +288,14 @@
   (provide 'js-mode-defaults))
 
 (use-package lsp-mode
-  :init(setq lsp-keymap-prefix "C-c l")
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+        lsp-client-packages '(lsp-eslint
+                              lsp-javascript
+                              lsp-rubocop
+                              lsp-ruby-lsp
+                              lsp-solargraph
+                              lsp-sorbet))
   :hook ((javascript-mode . lsp)
          (javascript-ts-mode . lsp)
          (js-mode . lsp)
