@@ -29,20 +29,21 @@
 
 ;;;; Appearance
 ;; Set appearance constants
-(defconst ars-theme--light-theme 'modus-operandi)
+(defconst ars-theme--light-theme 'ars-jetbrains-light)
 (defconst ars-theme--light-font "Iosevka")
 (defconst ars-theme--light-height 105)
 (defconst ars-theme--light-width 'regular)
 (defconst ars-theme--light-weight 'medium)
 
-(defconst ars-theme--dark-theme 'modus-vivendi)
+(defconst ars-theme--dark-theme 'ars-jetbrains-dark)
 (defconst ars-theme--dark-font "Iosevka")
 (defconst ars-theme--dark-height 105)
 (defconst ars-theme--dark-width 'regular)
 (defconst ars-theme--dark-weight 'medium)
 
-;; Install themes
+;; Install and locate themes
 (use-package modus-themes :ensure t)
+(add-to-list 'custom-theme-load-path (locate-user-emacs-file "themes"))
 
 ;; Make the theme change with the system (macos only) and create a
 ;; toggling binding.
@@ -203,6 +204,8 @@
          ("C-c C-SPC" . avy-goto-char-timer)))
 
 (use-package vundo)
+
+(use-package ghostel)
 
 
 ;;; Editing
